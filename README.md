@@ -1,1 +1,1 @@
-Check out the [project site][http://rotundasoftware.github.io/modui-popup/].
+Check out the [project site](http://rotundasoftware.github.io/modui-popup/).
