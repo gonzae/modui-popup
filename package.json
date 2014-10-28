@@ -1,0 +1,21 @@
+{
+  "name": "modui-popup-demo",
+  "version": "0.0.0",
+  "description": "",
+  "main": "demo_moduiPopup.js",
+  "style": [
+    "**/*.css"
+  ],
+  "keywords": [
+    "modui"
+  ],
+  "author": "Rotunda Software",
+  "license": "ISC",
+  "dependencies": {
+    "backbone": "^1.1.2",
+    "jquery": "^2.1.1",
+    "jquery-ui": "^1.10.5",
+    "modui-base": "^0.1.5",
+    "underscore": "^1.7.0"
+  }
+}
