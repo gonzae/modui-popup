@@ -20,6 +20,11 @@ var ExampleTwoView = Backbone.View.extend( {
     var template = _.template( $( '#example2_template' ).html(), {} );
     this.$el.html( template( this.model.toJSON() ) );
   },
+  rerender: function() {
+  	this.render();
+    $( '#example2--input ').val( this.model.get( 'text' ) ).focus();
+    this.delegateEvents()
+  },
 	events: {
 		'keyup #example2--input' : 'textChanged',
 	},
@@ -54,14 +59,15 @@ var MainView = Backbone.View.extend( {
 			contents : 'Woah! You actually clicked it!'
 		} );
 	},
+	exampleTwoView: null,
 	exampleTwoTrigger: function(){
-		var exampleTwoView = new ExampleTwoView( { el: $('#example2--popup') } );
+		if (!this.exampleTwoView) this.exampleTwoView = new ExampleTwoView( { el: $('#example2--popup') } );
 		ModuiPopup.open( {
 			target : $( '#example2--demo' ),
 			position : 'right center',
-			contents : exampleTwoView
+			contents : this.exampleTwoView
 		} );
-		exampleTwoView.render();
+		this.exampleTwoView.rerender();
 	},
 	example3Contents: 'I\'m here!',
 	exampleThreeTrigger: function() {
