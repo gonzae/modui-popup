@@ -1,5 +1,4 @@
 var $ = require( 'jquery' );
-require('jquery-ui/resizable');
 var _ = require( 'underscore' );
 
 var ModuiPopup = require( 'modui-popup' );
