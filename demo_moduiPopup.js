@@ -56,7 +56,7 @@ var MainView = Backbone.View.extend( {
 	initialize: function() {
 		this.render();
 		var example4ContainerDim = ( $( '.example4--outer' ).width() + scrollbarWidth() ) / 2;
-		$( '.example4--outer' ).scrollTop( example4ContainerDim / 2 ).scrollLeft( example4ContainerDim ).css('overflow-y', 'scroll');
+		$( '.example4--outer' ).scrollTop( example4ContainerDim / 2 ).scrollLeft( example4ContainerDim );
 	},
 	render: function(){
 		var template = _.template( $( '#main_template' ).html(), {});

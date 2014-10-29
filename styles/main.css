@@ -156,7 +156,6 @@ code, h1, h2, h3{
 	position: relative;
 	display: inline-block;
 	overflow: scroll;
-	overflow-y: hidden;
 	width: 14vw;
 	height: 14vw;
 }
