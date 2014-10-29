@@ -22,7 +22,7 @@ body, input{
 	font-size: 1.5vw;
 }
 
-button, input, .e3-table, .nav--link, .code{
+button, input, .example3-table, .nav--link, .code, .example4--inner{
 	background-color: #D1DBBD;
 	border: .1vw solid #3E606F;
 }
@@ -99,56 +99,60 @@ code, h1, h2{
 	cursor: pointer;
 }
 
-.example_2--container{
+.example2--container{
 	overflow: hidden;
 	text-align: center;
 	width: 10vw;
 }
 
-.example_2--container input{
+.example2--container input{
 	width: 8vw;
 }
 
-.e3-table{
+.example3-table{
 	width: 100%;
 }
 
-.e3-table tr{
+.example3-table tr{
 	height: 2vw;
 }
 
-.e3-table td{
+.example3-table td{
 	width: 30%;
 }
 
-.e3-table__right{
+.example3-table__right{
 	text-align: right;
 }
 
-.e3-table__center{
+.example3-table__center{
 	text-align: center;
 }
 
-.e3-table__left{
+.example3-table__left{
 	text-align: left;
 }
 
-/*.example_4--container{
-	overflow: hidden;
+.example4--container{
+	position: relative;
+	overflow: scroll;
+	width: 15vw;
+	height: 15vw;
 }
 
-.example_4--outer{
+.example4--outer{
+	display: inline-block;
+	width: 30vw;
+	height: 30vw;
+}
+
+.example4--inner{
 	display: inline-block;
 	border: thin solid black;
-	margin: 25px;
-	padding: 25px;
+	margin: 12vw;
+	width: 5vw;
+	height: 5vw;
 }
-
-.example_4--inner{
-	display: inline-block;
-	width: 100%;
-	height: 100%;
-}*/
 
 .code{
 	padding: 1vw;

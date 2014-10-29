@@ -7,10 +7,10 @@
 		<title>modui-popup</title>
 	</head>
 	<body>
-		<script type="text/template" id="example_2_template">
-			<div class="example_2--container">
+		<script type="text/template" id="example2_template">
+			<div class="example2--container">
 				<div><%= text %></div>
-				<input id="example_2--input">
+				<input id="example2--input">
 			</div>
 		</script>
 		<script type="text/template" id="main_template">
@@ -22,79 +22,78 @@
 			</nav>
 			<a name="play"></a>
 			<h2 class="section-header">Play</h2>
-			<div id="example_1" class="example">
+			<div id="example1" class="example">
 				<span class="example--component example--text">
 					<code>modui-popup</code> is a simple popup plugin for <code>backbone.js</code>. It allows you to rapidly integrate popups into forms and other interactive components of your app. See that input box over there? Why not click it?
 				</span>
 				<span class="example--component example--demo">
-					<input id="example_1--trigger" placeholder="click me">
+					<input id="example1--trigger" placeholder="click me">
 				</span>
 			</div>
 
-			<div id="example_2" class="example">
-				<span id="example_2--demo" class="example--component example--demo example--demo__left">
-					<button id="example_2--trigger" class="big-button">Backbone!</button>
-					<span id="example_2--popup"></span>
+			<div id="example2" class="example">
+				<span id="example2--demo" class="example--component example--demo example--demo__left">
+					<button id="example2--trigger" class="big-button">Backbone!</button>
+					<span id="example2--popup"></span>
 				</span>
 				<span class="example--component example--text">
 					So now you've got the idea. Simple popups. In the last example, we just provided some static text. Now, what if we instead want to pass in a backbone template? Totally doable. See that enormous button over there? Give it a click.
 				</span>
 			</div>
 
-			<div id="example_3" class="example">
+			<div id="example3" class="example">
 				<span class="example--component example--text">
 					Now that that's out of the way, how about positioning the bubble? Yeah, you can do that, too. Try some of those there radio buttons.
 				</span>
-				<span id="example_3--demo" class="example--component example--demo">
-					<table class="e3-table">
+				<span id="example3--demo" class="example--component example--demo">
+					<table class="example3-table">
 						<tr>
-							<td class="e3-table__left">
-								<input class="e3-radio" type="radio" name="example_3--radio" value="top left">
+							<td class="example3-table__left">
+								<input class="example3-radio" type="radio" name="example3--radio" value="top left">
 							</td>
-							<td class="e3-table__center">
-								<input class="e3-radio" type="radio" name="example_3--radio" value="top center">
+							<td class="example3-table__center">
+								<input class="example3-radio" type="radio" name="example3--radio" value="top center">
 							</td>
-							<td class="e3-table__right">
-								<input class="e3-radio" type="radio" name="example_3--radio" value="top right">
+							<td class="example3-table__right">
+								<input class="example3-radio" type="radio" name="example3--radio" value="top right">
 							</td>
 						</tr>
 						<tr>
-							<td class="e3-table__left">
-								<input class="e3-radio" type="radio" name="example_3--radio" value="left center">
+							<td class="example3-table__left">
+								<input class="example3-radio" type="radio" name="example3--radio" value="left center">
 							</td>
 							<td>
 							</td>
-							<td class="e3-table__right">
-								<input class="e3-radio" type="radio" name="example_3--radio" value="right center">
+							<td class="example3-table__right">
+								<input class="example3-radio" type="radio" name="example3--radio" value="right center">
 							</td>
 						</tr>
 						<tr>
-							<td class="e3-table__left">
-								<input class="e3-radio" type="radio" name="example_3--radio" value="bottom left">
+							<td class="example3-table__left">
+								<input class="example3-radio" type="radio" name="example3--radio" value="bottom left">
 							</td>
-							<td class="e3-table__center">
-								<input class="e3-radio" type="radio" name="example_3--radio" value="bottom center">
+							<td class="example3-table__center">
+								<input class="example3-radio" type="radio" name="example3--radio" value="bottom center">
 							</td>
-							<td class="e3-table__right">
-								<input class="e3-radio" type="radio" name="example_3--radio" value="bottom right">
+							<td class="example3-table__right">
+								<input class="example3-radio" type="radio" name="example3--radio" value="bottom right">
 							</td>
 						</tr>
 					</table>
 				</span>
 			</div>
 
-			<!--
-				<div id="example_4" class="example">
-					<span id="example_4--demo" class="example--component example--demo example_4--container">
-						<span class="example_4--outer">
-							<span id="example_4--inner" class="example_4--inner"></span>
-						</span>
+			<div id="example4" class="example">
+				<span id="example4--demo" class="example--component example--demo example4--container">
+					<span class="example4--outer">
+						<span id="example4--inner" class="example4--inner"></span>
 					</span>
-					<span class="example--component example--text">
-						Now wait, you say your layout is dynamic and you don't know where you'll have enough room for the popup? Let <code>modui-popup</code> do the thinking for you. Try resizing that baby over there.
-					</span>
-				</div>
-			-->
+				</span>
+				<span class="example--component example--text">
+					Now wait, you say your layout is dynamic and you don't know where you'll have enough room for the popup? Let <code>modui-popup</code> do the thinking for you. Try clicking on that green-blue square over there. Scroll the box around, and click it again. See? <code>modui-popup</code> knows the magic of bounding boxes.
+				</span>
+			</div>
+
 			<a name="install"></a>
 			<h2 class="section-header">Install</h2>
 			<code>npm install -g modui-popup</code>
@@ -103,7 +102,7 @@
 			<p><code>ModuiPopup</code> takes an object with three attributes, <code>target</code>, <code>position</code>, and <code>contents</code>. <code>target</code> sets the target element, which the popup will appear around. <code>position</code> sets where the popup will appear relative to the <code>target</code>. It accepts a two word string, such as 'top left' or 'middle right' or 'bottom center'. Finally, the <code>contents</code> determines what will be presented inside the popup. It accepts either plain strings or backbone views.</p>
 			<pre class="code">
 ModuiPopup.open({
-  target : $("#example_1--trigger"),
+  target : $("#example1--trigger"),
   position : 'top center',
   contents : 'Woah! You actually clicked it!'
 });</pre>

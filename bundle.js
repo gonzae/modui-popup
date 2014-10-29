@@ -3,8 +3,7 @@ var $ = require( 'jquery' );
 require('jquery-ui/resizable');
 var _ = require( 'underscore' );
 
-var ModuiPopup = require( './lib/moduiPopup' );
-var BaseView = require( 'modui-base' );
+var ModuiPopup = require( 'modui-popup' );
 var Backbone = require( 'backbone' );
 
 Backbone.$ = $;
@@ -20,17 +19,17 @@ var ExampleTwoView = Backbone.View.extend({
     this.render();
   },
   render: function(){
-    var template = _.template( $("#example_2_template").html(), {} );
+    var template = _.template( $("#example2_template").html(), {} );
     this.$el.html( template(this.model.toJSON()) );
   },
 	events: {
-		"keyup #example_2--input" : "textChanged",
+		"keyup #example2--input" : "textChanged",
 	},
 	textChanged: function(){
-		var newText = $('#example_2--input').val();
+		var newText = $('#example2--input').val();
 		this.model.set('text', newText);
 		this.render();
-		$('#example_2--input').val(newText).focus();
+		$('#example2--input').val(newText).focus();
 	}
 });
 
@@ -43,22 +42,22 @@ var MainView = Backbone.View.extend({
 		this.$el.html( template() );
 	},
 	events: {
-		"focus #example_1--trigger": "exampleOneTrigger",
-		"click #example_2--trigger": "exampleTwoTrigger",
-		"click .e3-radio": "exampleThreeTrigger",
-		"click .ui-resizable-handle": "exampleFourTrigger"
+		"focus #example1--trigger": "exampleOneTrigger",
+		"click #example2--trigger": "exampleTwoTrigger",
+		"click .example3-radio": "exampleThreeTrigger",
+		"click #example4--inner": "exampleFourTrigger"
 	},
 	exampleOneTrigger: function(){
 		ModuiPopup.open({
-			target : $("#example_1--trigger"),
+			target : $("#example1--trigger"),
 			position : 'top center',
 			contents : 'Woah! You actually clicked it!'
 		});
 	},
 	exampleTwoTrigger: function(){
-		var exampleTwoView = new ExampleTwoView({ el: $("#example_2--popup") });
+		var exampleTwoView = new ExampleTwoView({ el: $("#example2--popup") });
 		ModuiPopup.open( {
-			target : $("#example_2--demo"),
+			target : $("#example2--demo"),
 			position : 'right center',
 			contents : exampleTwoView
 		} );
@@ -66,9 +65,9 @@ var MainView = Backbone.View.extend({
 	},
 	example3Contents: "I'm here!",
 	exampleThreeTrigger: function(){
-		var position = $('input[name="example_3--radio"]:checked').val();
+		var position = $('input[name="example3--radio"]:checked').val();
 		ModuiPopup.open( {
-			target : $("#example_3--demo"),
+			target : $("#example3--demo"),
 			position : position,
 			contents : this.example3Contents
 		} );
@@ -83,615 +82,25 @@ var MainView = Backbone.View.extend({
 	},
 	exampleFourTrigger:	function(){
 		ModuiPopup.open({
-			target : $(".example_4--outer"),
-			position : 'right center',
-			contents : 'Watch me dance!'
+			target : $(".example4--inner"),
+			position : 'left center',
+			contents : 'Watch me dance!',
+			keepWithinRect : function(){ return {
+					top : $(".example4--container").offset().top,
+					bottom : $(".example4--container").offset().top + $(".example4--container").height(),
+					left   : $(".example4--container").offset().left,
+					right  : $(".example4--container").offset().left + $(".example4--container").width()
+				};
+			}
 		});
 	}
 });
 
-var mainView = new MainView({ el: $("#main") });;
+var mainView = new MainView({ el: $("#main") });
 
-$("#example_4--demo").resizable();
-},{"./lib/moduiPopup":2,"backbone":4,"jquery":9,"jquery-ui/resizable":7,"modui-base":10,"underscore":16}],2:[function(require,module,exports){
-
-var Super = require( 'modui-base' );
-var Backbone = require( 'backbone' );
-var _ = require( 'underscore' );
-var $ = require( 'jquery' );
-
-require( './ui/jquery-plugins/outside-events' );
-
-var lastPossibleViewElement = $( 'body' )[ 0 ];
-var openPopups = [];
-
-var kState_Closed = 'closed';
-var kState_Open = 'open';
-var kState_Closing = 'closing';
-
-var kFadeTime = 70;
-
-module.exports = Super.extend( {
-	options : [
-		'target!',
-		'contents',
-		{ distanceAway : 2 },
-		{ position : 'bottom center' },
-		{ pointerPosition : 'bottom center' },
-		{ keepWithinRect : function(){ return {
-			top : $( window ).scrollTop(),
-			bottom : $( window ).scrollTop() + $( window ).height(),
-			left   : 0,
-			right  : $( window ).width()
-		}; } },
-		{ pointerOffset : 0 },
-		{ closeOnOutsideClick : true },
-		'onClose',
-		'signature'
-	],
-
-	passMessages : { '*' : '.' }, // pass all courier messages directly through to parent view
-
-	className : 'modui-popup',
-
-	initialize : function() {
-		var _this = this;
-
-		this._setupTargetEl();
-
-		this._setState( kState_Closed );
-
-		if (this.$el.zIndex) { this.$el.zIndex( this.targetEl.zIndex() + 1 ); }
- 
-
-		if( this.closeOnOutsideClick ) {
-			setTimeout( function() {
-				// in case this popup is triggered by a click, we need to wait
-				// until the next event loop before we bind the outside click
-				// event to closing the popup. otherwise would close right away
-				_this.$el.bind( 'clickoutside', function( e ) {
-					// we do not close the popup if the clicked element is within the original
-					// target element that this popup is pointing at (or IS that element)
-					if( e.target !== _this.targetEl.get( 0 ) && ! $.contains( _this.targetEl.get( 0 ), e.target ) ) {
-						_this.close();
-					}
-				} );
-			} );
-		}
-	},
-
-	render : function() {
-		if( _.isString( this.contents ) ) {
-			this.$el.html( '<div class="html-contents">' + this.contents + '</div>' );
-		} else if( this.contents instanceof Backbone.View ) {
-			this.$el.html( '' );
-			this.$el.append( this.contents.$el );
-			this.contents.render();
-		}
-		else {
-			// if we don't have any contents specified, assume that this is
-			// a derived class that defines its own contents with its own render.
-			Super.prototype.render.apply( this, arguments );
-		}
-	},
-
-	close : function( callback ) {
-		var _this = this;
-
-		if( this.state !== kState_Open ) return;
-
-		this.$el.unbind( 'clickoutside' );
-		this._setState( kState_Closing );
-
-		setTimeout( function() {
-			if( _this.state === kState_Closing ) {
-				_this.remove();
-				openPopups = _.without( openPopups, _this );
-				if( _this.onClose ) _this.onClose();
-			}
-
-			if( callback ) callback();
-		}, kFadeTime );
-	},
-
-	reposition : function() {
-		var targetWidth = Math.round( this.targetEl.outerWidth() );
-		var targetHeight = Math.round( this.targetEl.outerHeight() );
-
-		var popupWidth  = Math.round( this.$el.width() );
-		var popupHeight = Math.round( this.$el.outerHeight() );
-
-		//var offsetParent = $( 'html' ).get(0) !== this.targetEl.offsetParent().get( 0 ) ? this.targetEl.offsetParent() : $( window );
-		var offsetParent = $( window );
-		var parentWidth = Math.round( offsetParent.outerWidth() );
-		var parentHeight = Math.round( offsetParent.outerHeight() );
-
-		var distanceAway = this.distanceAway;
-
-		var targetOffset = this.targetEl.offset();
-		var pointerOffset = this.pointerOffset;
-
-		var cssPositionProps;
-
-		var currentPositionBeingTried = this.position;
-		var allPositionsAreOutOfBounds = false;
-		var done = false;
-
-		do {  // run through all our different positions to find one that works
-			switch( currentPositionBeingTried ) {
-				case 'top left':
-					cssPositionProps = {
-						bottom : parentHeight - targetOffset.top + distanceAway,
-						left : targetOffset.left + pointerOffset,
-						top : 'auto',
-						right : 'auto'
-					};
-					break;
-				case 'top center':
-					cssPositionProps = {
-						bottom : parentHeight - targetOffset.top + distanceAway,
-						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
-						top : 'auto',
-						right : 'auto'
-					};
-					break;
-				case 'top right':
-					cssPositionProps = {
-						top	: 'auto',
-						bottom : parentHeight - targetOffset.top + distanceAway,
-						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset,
-						left : 'auto'
-					};
-					break;
-				case 'left center':
-					cssPositionProps = {
-						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ),
-						right : parentWidth - targetOffset.left + distanceAway,
-						left : 'auto',
-						bottom : 'auto'
-					};
-					break;
-				case 'right center':
-					cssPositionProps = {
-						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ),
-						left : targetOffset.left + targetWidth + distanceAway,
-						bottom : 'auto',
-						right : 'auto'
-					};
-					break;
-				case 'bottom left':
-					cssPositionProps = {
-						top	: targetOffset.top + targetHeight + distanceAway,
-						left : targetOffset.left + pointerOffset,
-						right : 'auto',
-						bottom : 'auto'
-					};
-					break;
-				case 'bottom center':
-					cssPositionProps = {
-						top	: targetOffset.top + targetHeight + distanceAway,
-						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
-						bottom : 'auto',
-						right : 'auto'
-					};
-					break;
-				case 'bottom right':
-					cssPositionProps = {
-						top	: targetOffset.top + targetHeight + distanceAway,
-						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset,
-						bottom : 'auto',
-						left : 'auto'
-					};
-					break;
-			}
-
-			// tentatively place on stage
-			this.$el
-				.css( cssPositionProps )
-				.removeClass( 'top left center bottom right' )
-				.addClass( currentPositionBeingTried )
-			;
-
-			if( this._isOutsideOfBoundingRect() ) {
-				// Popup is outside bounding rect. try a new position.
-				currentPositionBeingTried = _getNextPositionToTry( currentPositionBeingTried );
-
-				// if we have tried all the different positions and are now are back at our
-				// original 'preferred' position, then, shit, all positions were out of bounds.
-				allPositionsAreOutOfBounds = currentPositionBeingTried === this.position;
-				if( allPositionsAreOutOfBounds ) done = true;
-			}
-			else done = true;
-
-		} while( ! done );
-
-		return ! allPositionsAreOutOfBounds;
-	},
-
-	_isOutsideOfBoundingRect : function() {
-		var myOffset = this.$el.offset();
-		if( ! myOffset ) return false; // hidden elements have undefined offsets, not much we can do
-
-		var myRect = {
-			top : myOffset.top,
-			right : myOffset.left + this.$el.width(),
-			bottom : myOffset.top + this.$el.outerHeight(),
-			left : myOffset.left
-		};
-
-		var keepWithinRect = _.result( this, 'keepWithinRect' );
-
-		var sidesAreOutOfBounds = {
-			top : ( myRect.top < keepWithinRect.top ),
-			bottom : ( myRect.bottom > keepWithinRect.bottom ),
-			right : ( myRect.right > keepWithinRect.right ),
-			left : ( myRect.left < keepWithinRect.left )
-		};
-
-		return _.contains( sidesAreOutOfBounds, true );
-	},
-
-	_onOptionsChanged : function( changedOptions ) {
-		if( 'target' in changedOptions ) this._setupTargetEl();
-		if( 'contents' in changedOptions ) this.render();
-
-		this.reposition();
-	},
-
-	_getParentView : function() {
-		var parent = null;
-
-		var curElement = this.targetEl;
-		while( curElement.length > 0 && curElement[0] !== lastPossibleViewElement ) {
-			var view = curElement.data( 'view' );
-			if( view && view instanceof Backbone.View ) {
-				parent = view;
-				break;
-			}
-
-			curElement = curElement.parent();
-		}
-
-		return parent;
-	},
-
-	_setState : function( newState ) {
-		this.state = newState;
-		this.$el.attr( 'data-state', this.state );
-	},
-
-	_setupTargetEl : function() {
-		var _this = this;
-
-		this.targetEl = this.target instanceof Backbone.View ? this.target.$el : this.target;
-
-		this.targetEl.on( 'remove', function() {
-			_this.close();
-		} );
-	}
-}, {
-	open : function( options ) {
-		var popupInstance;
-
-		var existingPopupsOfThisSignature = _.filter( openPopups, function( thisPopup ) {
-			return thisPopup.signature === options.signature && thisPopup.state === kState_Open;
-		} );
-
-		if( existingPopupsOfThisSignature.length ) {
-			var popupWeAreGoingTokeep = existingPopupsOfThisSignature.pop();
-
-			popupInstance = popupWeAreGoingTokeep;
-			popupInstance.setOptions( options );
-
-			_.each( existingPopupsOfThisSignature, function( thisExtraPopup ) {
-				thisExtraPopup.close();
-			} );
-		}
-
-		if( ! popupInstance ) {
-			popupInstance = new this( options );
-
-			$( 'body' ).append( popupInstance.$el );
-			popupInstance.render();
-			popupInstance.reposition();
-			openPopups.push( popupInstance );
-		}
-
-		popupInstance._setState( kState_Open );
-
-		return popupInstance;
-	}
-} );
-
-$( window ).resize(function() {
-	_.each( openPopups, function( thisPopup ) {
-		thisPopup.reposition();
-	} );
-} );
-
-function _getNextPositionToTry( position ) {
-	switch( position ) {
-		case 'top left':
-			position = 'bottom left';
-			break;
-		case 'bottom left':
-			position = 'top right';
-			break;
-		case 'top right':
-			position = 'bottom right';
-			break;
-		case 'bottom right':
-			position = 'top center';
-			break;
-		case 'top center':
-			position = 'bottom center';
-			break;
-		case 'bottom center':
-			position = 'right center';
-			break;
-		case 'right center':
-			position = 'left center';
-			break;
-		case 'left center':
-			position = 'top center';
-			break;
-	}
-
-	return position;
-}
-},{"./ui/jquery-plugins/outside-events":3,"backbone":4,"jquery":9,"modui-base":10,"underscore":16}],3:[function(require,module,exports){
-// UMD wrapper added by Rotunda
-
-(function (factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    // define(['jquery'], factory);
-  } else if (typeof exports === 'object') {
-    // Node/CommonJS
-    factory(require('jquery'));
-  } else {
-    // Browser globals
-    factory(jQuery);
-  }
-} (function(jQuery) 
-{
-  /*!
-   * jQuery outside events - v1.1 - 3/16/2010
-   * http://benalman.com/projects/jquery-outside-events-plugin/
-   * 
-   * Copyright (c) 2010 "Cowboy" Ben Alman
-   * Dual licensed under the MIT and GPL licenses.
-   * http://benalman.com/about/license/
-   */
-
-  // Script: jQuery outside events
-  //
-  // *Version: 1.1, Last updated: 3/16/2010*
-  // 
-  // Project Home - http://benalman.com/projects/jquery-outside-events-plugin/
-  // GitHub       - http://github.com/cowboy/jquery-outside-events/
-  // Source       - http://github.com/cowboy/jquery-outside-events/raw/master/jquery.ba-outside-events.js
-  // (Minified)   - http://github.com/cowboy/jquery-outside-events/raw/master/jquery.ba-outside-events.min.js (0.9kb)
-  // 
-  // About: License
-  // 
-  // Copyright (c) 2010 "Cowboy" Ben Alman,
-  // Dual licensed under the MIT and GPL licenses.
-  // http://benalman.com/about/license/
-  // 
-  // About: Examples
-  // 
-  // These working examples, complete with fully commented code, illustrate a few
-  // ways in which this plugin can be used.
-  // 
-  // clickoutside - http://benalman.com/code/projects/jquery-outside-events/examples/clickoutside/
-  // dblclickoutside - http://benalman.com/code/projects/jquery-outside-events/examples/dblclickoutside/
-  // mouseoveroutside - http://benalman.com/code/projects/jquery-outside-events/examples/mouseoveroutside/
-  // focusoutside - http://benalman.com/code/projects/jquery-outside-events/examples/focusoutside/
-  // 
-  // About: Support and Testing
-  // 
-  // Information about what version or versions of jQuery this plugin has been
-  // tested with, what browsers it has been tested in, and where the unit tests
-  // reside (so you can test it yourself).
-  // 
-  // jQuery Versions - 1.4.2
-  // Browsers Tested - Internet Explorer 6-8, Firefox 2-3.6, Safari 3-4, Chrome, Opera 9.6-10.1.
-  // Unit Tests      - http://benalman.com/code/projects/jquery-outside-events/unit/
-  // 
-  // About: Release History
-  // 
-  // 1.1 - (3/16/2010) Made "clickoutside" plugin more general, resulting in a
-  //       whole new plugin with more than a dozen default "outside" events and
-  //       a method that can be used to add new ones.
-  // 1.0 - (2/27/2010) Initial release
-  //
-  // Topic: Default "outside" events
-  // 
-  // Note that each "outside" event is powered by an "originating" event. Only
-  // when the originating event is triggered on an element outside the element
-  // to which that outside event is bound will the bound event be triggered.
-  // 
-  // Because each outside event is powered by a separate originating event,
-  // stopping propagation of that originating event will prevent its related
-  // outside event from triggering.
-  // 
-  //  OUTSIDE EVENT     - ORIGINATING EVENT
-  //  clickoutside      - click
-  //  dblclickoutside   - dblclick
-  //  focusoutside      - focusin
-  //  bluroutside       - focusout
-  //  mousemoveoutside  - mousemove
-  //  mousedownoutside  - mousedown
-  //  mouseupoutside    - mouseup
-  //  mouseoveroutside  - mouseover
-  //  mouseoutoutside   - mouseout
-  //  keydownoutside    - keydown
-  //  keypressoutside   - keypress
-  //  keyupoutside      - keyup
-  //  changeoutside     - change
-  //  selectoutside     - select
-  //  submitoutside     - submit
-
-  (function($,doc,outside){
-    '$:nomunge'; // Used by YUI compressor.
-    
-    $.map(
-      // All these events will get an "outside" event counterpart by default.
-      'click dblclick mousemove mousedown mouseup mouseover mouseout change select submit keydown keypress keyup'.split(' '),
-      function( event_name ) { jq_addOutsideEvent( event_name ); }
-    );
-    
-    // The focus and blur events are really focusin and focusout when it comes
-    // to delegation, so they are a special case.
-    jq_addOutsideEvent( 'focusin',  'focus' + outside );
-    jq_addOutsideEvent( 'focusout', 'blur' + outside );
-    
-    // Method: jQuery.addOutsideEvent
-    // 
-    // Register a new "outside" event to be with this method. Adding an outside
-    // event that already exists will probably blow things up, so check the
-    // <Default "outside" events> list before trying to add a new one.
-    // 
-    // Usage:
-    // 
-    // > jQuery.addOutsideEvent( event_name [, outside_event_name ] );
-    // 
-    // Arguments:
-    // 
-    //  event_name - (String) The name of the originating event that the new
-    //    "outside" event will be powered by. This event can be a native or
-    //    custom event, as long as it bubbles up the DOM tree.
-    //  outside_event_name - (String) An optional name for the new "outside"
-    //    event. If omitted, the outside event will be named whatever the
-    //    value of `event_name` is plus the "outside" suffix.
-    // 
-    // Returns:
-    // 
-    //  Nothing.
-    
-    $.addOutsideEvent = jq_addOutsideEvent;
-    
-    function jq_addOutsideEvent( event_name, outside_event_name ) {
-      
-      // The "outside" event name.
-      outside_event_name = outside_event_name || event_name + outside;
-      
-      // A jQuery object containing all elements to which the "outside" event is
-      // bound.
-      var elems = $(),
-        
-        // The "originating" event, namespaced for easy unbinding.
-        event_namespaced = event_name + '.' + outside_event_name + '-special-event';
-      
-      // Event: outside events
-      // 
-      // An "outside" event is triggered on an element when its corresponding
-      // "originating" event is triggered on an element outside the element in
-      // question. See the <Default "outside" events> list for more information.
-      // 
-      // Usage:
-      // 
-      // > jQuery('selector').bind( 'clickoutside', function(event) {
-      // >   var clicked_elem = $(event.target);
-      // >   ...
-      // > });
-      // 
-      // > jQuery('selector').bind( 'dblclickoutside', function(event) {
-      // >   var double_clicked_elem = $(event.target);
-      // >   ...
-      // > });
-      // 
-      // > jQuery('selector').bind( 'mouseoveroutside', function(event) {
-      // >   var moused_over_elem = $(event.target);
-      // >   ...
-      // > });
-      // 
-      // > jQuery('selector').bind( 'focusoutside', function(event) {
-      // >   var focused_elem = $(event.target);
-      // >   ...
-      // > });
-      // 
-      // You get the idea, right?
-      
-      $.event.special[ outside_event_name ] = {
-        
-        // Called only when the first "outside" event callback is bound per
-        // element.
-        setup: function(){
-          
-          // Add this element to the list of elements to which this "outside"
-          // event is bound.
-          elems = elems.add( this );
-          
-          // If this is the first element getting the event bound, bind a handler
-          // to document to catch all corresponding "originating" events.
-          if ( elems.length === 1 ) {
-            $(doc).bind( event_namespaced, handle_event );
-          }
-        },
-        
-        // Called only when the last "outside" event callback is unbound per
-        // element.
-        teardown: function(){
-          
-          // Remove this element from the list of elements to which this
-          // "outside" event is bound.
-          elems = elems.not( this );
-          
-          // If this is the last element removed, remove the "originating" event
-          // handler on document that powers this "outside" event.
-          if ( elems.length === 0 ) {
-            $(doc).unbind( event_namespaced );
-          }
-        },
-        
-        // Called every time a "outside" event callback is bound to an element.
-        add: function( handleObj ) {
-          var old_handler = handleObj.handler;
-          
-          // This function is executed every time the event is triggered. This is
-          // used to override the default event.target reference with one that is
-          // more useful.
-          handleObj.handler = function( event, elem ) {
-            
-            // Set the event object's .target property to the element that the
-            // user interacted with, not the element that the "outside" event was
-            // was triggered on.
-            event.target = elem;
-            
-            // Execute the actual bound handler.
-            old_handler.apply( this, arguments );
-          };
-        }
-      };
-      
-      // When the "originating" event is triggered..
-      function handle_event( event ) {
-        
-        // Iterate over all elements to which this "outside" event is bound.
-        $(elems).each(function(){
-          var elem = $(this);
-          
-          // If this element isn't the element on which the event was triggered,
-          // and this element doesn't contain said element, then said element is
-          // considered to be outside, and the "outside" event will be triggered!
-          if ( this !== event.target && !elem.has(event.target).length ) {
-            
-            // Use triggerHandler instead of trigger so that the "outside" event
-            // doesn't bubble. Pass in the "originating" event's .target so that
-            // the "outside" event.target can be overridden with something more
-            // meaningful.
-            elem.triggerHandler( outside_event_name, event.target );
-          }
-        });
-      };
-      
-    };
-    
-  })(jQuery,document,"outside");
-}));
-},{"jquery":9}],4:[function(require,module,exports){
+var example4ContainerDim = $(".example4--container").width() / 2;
+$(".example4--container").scrollTop(example4ContainerDim/2).scrollLeft(example4ContainerDim);
+},{"backbone":2,"jquery":7,"jquery-ui/resizable":5,"modui-popup":15,"underscore":16}],2:[function(require,module,exports){
 //     Backbone.js 1.1.2
 
 //     (c) 2010-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -2301,7 +1710,7 @@ function _getNextPositionToTry( position ) {
 
 }));
 
-},{"underscore":16}],5:[function(require,module,exports){
+},{"underscore":16}],3:[function(require,module,exports){
 var jQuery = require('jquery');
 
 /*!
@@ -2625,7 +2034,7 @@ $.extend( $.ui, {
 
 })( jQuery );
 
-},{"jquery":9}],6:[function(require,module,exports){
+},{"jquery":7}],4:[function(require,module,exports){
 var jQuery = require('jquery');
 require('./widget');
 
@@ -2799,7 +2208,7 @@ $.widget("ui.mouse", {
 
 })(jQuery);
 
-},{"./widget":8,"jquery":9}],7:[function(require,module,exports){
+},{"./widget":6,"jquery":7}],5:[function(require,module,exports){
 var jQuery = require('jquery');
 require('./core');
 require('./mouse');
@@ -3784,7 +3193,7 @@ $.ui.plugin.add("resizable", "grid", {
 
 })(jQuery);
 
-},{"./core":5,"./mouse":6,"./widget":8,"jquery":9}],8:[function(require,module,exports){
+},{"./core":3,"./mouse":4,"./widget":6,"jquery":7}],6:[function(require,module,exports){
 var jQuery = require('jquery');
 
 /*!
@@ -4309,7 +3718,7 @@ $.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
 
 })( jQuery );
 
-},{"jquery":9}],9:[function(require,module,exports){
+},{"jquery":7}],7:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.1
  * http://jquery.com/
@@ -13501,7 +12910,7 @@ return jQuery;
 
 }));
 
-},{}],10:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var _ = require( 'underscore' );
 var Backbone = require( 'backbone' );
 Backbone.$ = require( 'jquery' );
@@ -13567,7 +12976,7 @@ module.exports = Super.extend( {
 	// }
 } );
 
-},{"backbone":4,"backbone-courier":11,"backbone-handle":12,"backbone-subviews":13,"backbone-view-options":14,"jquery":9,"underscore":16}],11:[function(require,module,exports){
+},{"backbone":2,"backbone-courier":9,"backbone-handle":10,"backbone-subviews":11,"backbone-view-options":12,"jquery":7,"underscore":16}],9:[function(require,module,exports){
 ( function( root, factory ) {
 	// UMD wrapper.
 	if ( typeof define === 'function' && define.amd ) {
@@ -13765,7 +13174,7 @@ module.exports = Super.extend( {
 	return Backbone.Courier;
 } ) );
 
-},{"backbone":4,"underscore":16}],12:[function(require,module,exports){
+},{"backbone":2,"underscore":16}],10:[function(require,module,exports){
 var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
 /*
@@ -13863,7 +13272,7 @@ var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
 	return Backbone.Handle;
 } ) );
-},{"backbone":4,"underscore":16}],13:[function(require,module,exports){
+},{"backbone":2,"underscore":16}],11:[function(require,module,exports){
 /*
  * Backbone.Subviews, v0.7.3
  * Copyright (c)2013-2014 Rotunda Software, LLC.
@@ -13989,7 +13398,7 @@ var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
 	return Backbone.Subviews;
 } ) );
-},{"backbone":4,"underscore":16}],14:[function(require,module,exports){
+},{"backbone":2,"underscore":16}],12:[function(require,module,exports){
 /*
  * Backbone.ViewOptions, v0.2.4
  * Copyright (c)2014 Rotunda Software, LLC.
@@ -14126,7 +13535,7 @@ var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
 } ) );
 
-},{"backbone":4,"underscore":15}],15:[function(require,module,exports){
+},{"backbone":2,"underscore":13}],13:[function(require,module,exports){
 //     Underscore.js 1.6.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -15471,7 +14880,605 @@ var delegateEventSplitter = /^(\S+)\s*(.*)$/;
   }
 }).call(this);
 
-},{}],16:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
+// UMD wrapper added by Rotunda
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    // define(['jquery'], factory);
+  } else if (typeof exports === 'object') {
+    // Node/CommonJS
+    factory(require('jquery'));
+  } else {
+    // Browser globals
+    factory(jQuery);
+  }
+} (function(jQuery) 
+{
+  /*!
+   * jQuery outside events - v1.1 - 3/16/2010
+   * http://benalman.com/projects/jquery-outside-events-plugin/
+   * 
+   * Copyright (c) 2010 "Cowboy" Ben Alman
+   * Dual licensed under the MIT and GPL licenses.
+   * http://benalman.com/about/license/
+   */
+
+  // Script: jQuery outside events
+  //
+  // *Version: 1.1, Last updated: 3/16/2010*
+  // 
+  // Project Home - http://benalman.com/projects/jquery-outside-events-plugin/
+  // GitHub       - http://github.com/cowboy/jquery-outside-events/
+  // Source       - http://github.com/cowboy/jquery-outside-events/raw/master/jquery.ba-outside-events.js
+  // (Minified)   - http://github.com/cowboy/jquery-outside-events/raw/master/jquery.ba-outside-events.min.js (0.9kb)
+  // 
+  // About: License
+  // 
+  // Copyright (c) 2010 "Cowboy" Ben Alman,
+  // Dual licensed under the MIT and GPL licenses.
+  // http://benalman.com/about/license/
+  // 
+  // About: Examples
+  // 
+  // These working examples, complete with fully commented code, illustrate a few
+  // ways in which this plugin can be used.
+  // 
+  // clickoutside - http://benalman.com/code/projects/jquery-outside-events/examples/clickoutside/
+  // dblclickoutside - http://benalman.com/code/projects/jquery-outside-events/examples/dblclickoutside/
+  // mouseoveroutside - http://benalman.com/code/projects/jquery-outside-events/examples/mouseoveroutside/
+  // focusoutside - http://benalman.com/code/projects/jquery-outside-events/examples/focusoutside/
+  // 
+  // About: Support and Testing
+  // 
+  // Information about what version or versions of jQuery this plugin has been
+  // tested with, what browsers it has been tested in, and where the unit tests
+  // reside (so you can test it yourself).
+  // 
+  // jQuery Versions - 1.4.2
+  // Browsers Tested - Internet Explorer 6-8, Firefox 2-3.6, Safari 3-4, Chrome, Opera 9.6-10.1.
+  // Unit Tests      - http://benalman.com/code/projects/jquery-outside-events/unit/
+  // 
+  // About: Release History
+  // 
+  // 1.1 - (3/16/2010) Made "clickoutside" plugin more general, resulting in a
+  //       whole new plugin with more than a dozen default "outside" events and
+  //       a method that can be used to add new ones.
+  // 1.0 - (2/27/2010) Initial release
+  //
+  // Topic: Default "outside" events
+  // 
+  // Note that each "outside" event is powered by an "originating" event. Only
+  // when the originating event is triggered on an element outside the element
+  // to which that outside event is bound will the bound event be triggered.
+  // 
+  // Because each outside event is powered by a separate originating event,
+  // stopping propagation of that originating event will prevent its related
+  // outside event from triggering.
+  // 
+  //  OUTSIDE EVENT     - ORIGINATING EVENT
+  //  clickoutside      - click
+  //  dblclickoutside   - dblclick
+  //  focusoutside      - focusin
+  //  bluroutside       - focusout
+  //  mousemoveoutside  - mousemove
+  //  mousedownoutside  - mousedown
+  //  mouseupoutside    - mouseup
+  //  mouseoveroutside  - mouseover
+  //  mouseoutoutside   - mouseout
+  //  keydownoutside    - keydown
+  //  keypressoutside   - keypress
+  //  keyupoutside      - keyup
+  //  changeoutside     - change
+  //  selectoutside     - select
+  //  submitoutside     - submit
+
+  (function($,doc,outside){
+    '$:nomunge'; // Used by YUI compressor.
+    
+    $.map(
+      // All these events will get an "outside" event counterpart by default.
+      'click dblclick mousemove mousedown mouseup mouseover mouseout change select submit keydown keypress keyup'.split(' '),
+      function( event_name ) { jq_addOutsideEvent( event_name ); }
+    );
+    
+    // The focus and blur events are really focusin and focusout when it comes
+    // to delegation, so they are a special case.
+    jq_addOutsideEvent( 'focusin',  'focus' + outside );
+    jq_addOutsideEvent( 'focusout', 'blur' + outside );
+    
+    // Method: jQuery.addOutsideEvent
+    // 
+    // Register a new "outside" event to be with this method. Adding an outside
+    // event that already exists will probably blow things up, so check the
+    // <Default "outside" events> list before trying to add a new one.
+    // 
+    // Usage:
+    // 
+    // > jQuery.addOutsideEvent( event_name [, outside_event_name ] );
+    // 
+    // Arguments:
+    // 
+    //  event_name - (String) The name of the originating event that the new
+    //    "outside" event will be powered by. This event can be a native or
+    //    custom event, as long as it bubbles up the DOM tree.
+    //  outside_event_name - (String) An optional name for the new "outside"
+    //    event. If omitted, the outside event will be named whatever the
+    //    value of `event_name` is plus the "outside" suffix.
+    // 
+    // Returns:
+    // 
+    //  Nothing.
+    
+    $.addOutsideEvent = jq_addOutsideEvent;
+    
+    function jq_addOutsideEvent( event_name, outside_event_name ) {
+      
+      // The "outside" event name.
+      outside_event_name = outside_event_name || event_name + outside;
+      
+      // A jQuery object containing all elements to which the "outside" event is
+      // bound.
+      var elems = $(),
+        
+        // The "originating" event, namespaced for easy unbinding.
+        event_namespaced = event_name + '.' + outside_event_name + '-special-event';
+      
+      // Event: outside events
+      // 
+      // An "outside" event is triggered on an element when its corresponding
+      // "originating" event is triggered on an element outside the element in
+      // question. See the <Default "outside" events> list for more information.
+      // 
+      // Usage:
+      // 
+      // > jQuery('selector').bind( 'clickoutside', function(event) {
+      // >   var clicked_elem = $(event.target);
+      // >   ...
+      // > });
+      // 
+      // > jQuery('selector').bind( 'dblclickoutside', function(event) {
+      // >   var double_clicked_elem = $(event.target);
+      // >   ...
+      // > });
+      // 
+      // > jQuery('selector').bind( 'mouseoveroutside', function(event) {
+      // >   var moused_over_elem = $(event.target);
+      // >   ...
+      // > });
+      // 
+      // > jQuery('selector').bind( 'focusoutside', function(event) {
+      // >   var focused_elem = $(event.target);
+      // >   ...
+      // > });
+      // 
+      // You get the idea, right?
+      
+      $.event.special[ outside_event_name ] = {
+        
+        // Called only when the first "outside" event callback is bound per
+        // element.
+        setup: function(){
+          
+          // Add this element to the list of elements to which this "outside"
+          // event is bound.
+          elems = elems.add( this );
+          
+          // If this is the first element getting the event bound, bind a handler
+          // to document to catch all corresponding "originating" events.
+          if ( elems.length === 1 ) {
+            $(doc).bind( event_namespaced, handle_event );
+          }
+        },
+        
+        // Called only when the last "outside" event callback is unbound per
+        // element.
+        teardown: function(){
+          
+          // Remove this element from the list of elements to which this
+          // "outside" event is bound.
+          elems = elems.not( this );
+          
+          // If this is the last element removed, remove the "originating" event
+          // handler on document that powers this "outside" event.
+          if ( elems.length === 0 ) {
+            $(doc).unbind( event_namespaced );
+          }
+        },
+        
+        // Called every time a "outside" event callback is bound to an element.
+        add: function( handleObj ) {
+          var old_handler = handleObj.handler;
+          
+          // This function is executed every time the event is triggered. This is
+          // used to override the default event.target reference with one that is
+          // more useful.
+          handleObj.handler = function( event, elem ) {
+            
+            // Set the event object's .target property to the element that the
+            // user interacted with, not the element that the "outside" event was
+            // was triggered on.
+            event.target = elem;
+            
+            // Execute the actual bound handler.
+            old_handler.apply( this, arguments );
+          };
+        }
+      };
+      
+      // When the "originating" event is triggered..
+      function handle_event( event ) {
+        
+        // Iterate over all elements to which this "outside" event is bound.
+        $(elems).each(function(){
+          var elem = $(this);
+          
+          // If this element isn't the element on which the event was triggered,
+          // and this element doesn't contain said element, then said element is
+          // considered to be outside, and the "outside" event will be triggered!
+          if ( this !== event.target && !elem.has(event.target).length ) {
+            
+            // Use triggerHandler instead of trigger so that the "outside" event
+            // doesn't bubble. Pass in the "originating" event's .target so that
+            // the "outside" event.target can be overridden with something more
+            // meaningful.
+            elem.triggerHandler( outside_event_name, event.target );
+          }
+        });
+      };
+      
+    };
+    
+  })(jQuery,document,"outside");
+}));
+},{"jquery":7}],15:[function(require,module,exports){
+
+var Super = require( 'modui-base' );
+var Backbone = require( 'backbone' );
+var _ = require( 'underscore' );
+var $ = require( 'jquery' );
+
+require( './lib/ui/jquery-plugins/outside-events' );
+
+var lastPossibleViewElement = $( 'body' )[ 0 ];
+var openPopups = [];
+
+var kState_Closed = 'closed';
+var kState_Open = 'open';
+var kState_Closing = 'closing';
+
+var kFadeTime = 70;
+
+module.exports = Super.extend( {
+	options : [
+		'target!',
+		'contents',
+		{ distanceAway : 2 },
+		{ position : 'bottom center' },
+		{ pointerPosition : 'bottom center' },
+		{ keepWithinRect : function(){ return {
+			top : $( window ).scrollTop(),
+			bottom : $( window ).scrollTop() + $( window ).height(),
+			left   : 0,
+			right  : $( window ).width()
+		}; } },
+		{ pointerOffset : 0 },
+		{ closeOnOutsideClick : true },
+		'onClose',
+		'signature'
+	],
+
+	passMessages : { '*' : '.' }, // pass all courier messages directly through to parent view
+
+	className : 'modui-popup',
+
+	initialize : function() {
+		var _this = this;
+
+		this._setupTargetEl();
+
+		this._setState( kState_Closed );
+
+		if (this.$el.zIndex) { this.$el.zIndex( this.targetEl.zIndex() + 1 ); }
+ 
+
+		if( this.closeOnOutsideClick ) {
+			setTimeout( function() {
+				// in case this popup is triggered by a click, we need to wait
+				// until the next event loop before we bind the outside click
+				// event to closing the popup. otherwise would close right away
+				_this.$el.bind( 'clickoutside', function( e ) {
+					// we do not close the popup if the clicked element is within the original
+					// target element that this popup is pointing at (or IS that element)
+					if( e.target !== _this.targetEl.get( 0 ) && ! $.contains( _this.targetEl.get( 0 ), e.target ) ) {
+						_this.close();
+					}
+				} );
+			} );
+		}
+	},
+
+	render : function() {
+		if( _.isString( this.contents ) ) {
+			this.$el.html( '<div class="html-contents">' + this.contents + '</div>' );
+		} else if( this.contents instanceof Backbone.View ) {
+			this.$el.html( '' );
+			this.$el.append( this.contents.$el );
+			this.contents.render();
+		}
+		else {
+			// if we don't have any contents specified, assume that this is
+			// a derived class that defines its own contents with its own render.
+			Super.prototype.render.apply( this, arguments );
+		}
+	},
+
+	close : function( callback ) {
+		var _this = this;
+
+		if( this.state !== kState_Open ) return;
+
+		this.$el.unbind( 'clickoutside' );
+		this._setState( kState_Closing );
+
+		setTimeout( function() {
+			if( _this.state === kState_Closing ) {
+				_this.remove();
+				openPopups = _.without( openPopups, _this );
+				if( _this.onClose ) _this.onClose();
+			}
+
+			if( callback ) callback();
+		}, kFadeTime );
+	},
+
+	reposition : function() {
+		var targetWidth = Math.round( this.targetEl.outerWidth() );
+		var targetHeight = Math.round( this.targetEl.outerHeight() );
+
+		var popupWidth  = Math.round( this.$el.width() );
+		var popupHeight = Math.round( this.$el.outerHeight() );
+
+		//var offsetParent = $( 'html' ).get(0) !== this.targetEl.offsetParent().get( 0 ) ? this.targetEl.offsetParent() : $( window );
+		var offsetParent = $( window );
+		var parentWidth = Math.round( offsetParent.outerWidth() );
+		var parentHeight = Math.round( offsetParent.outerHeight() );
+
+		var distanceAway = this.distanceAway;
+
+		var targetOffset = this.targetEl.offset();
+		var pointerOffset = this.pointerOffset;
+
+		var cssPositionProps;
+
+		var currentPositionBeingTried = this.position;
+		var allPositionsAreOutOfBounds = false;
+		var done = false;
+
+		do {  // run through all our different positions to find one that works
+			switch( currentPositionBeingTried ) {
+				case 'top left':
+					cssPositionProps = {
+						bottom : parentHeight - targetOffset.top + distanceAway,
+						left : targetOffset.left + pointerOffset,
+						top : 'auto',
+						right : 'auto'
+					};
+					break;
+				case 'top center':
+					cssPositionProps = {
+						bottom : parentHeight - targetOffset.top + distanceAway,
+						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
+						top : 'auto',
+						right : 'auto'
+					};
+					break;
+				case 'top right':
+					cssPositionProps = {
+						top	: 'auto',
+						bottom : parentHeight - targetOffset.top + distanceAway,
+						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset,
+						left : 'auto'
+					};
+					break;
+				case 'left center':
+					cssPositionProps = {
+						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ),
+						right : parentWidth - targetOffset.left + distanceAway,
+						left : 'auto',
+						bottom : 'auto'
+					};
+					break;
+				case 'right center':
+					cssPositionProps = {
+						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ),
+						left : targetOffset.left + targetWidth + distanceAway,
+						bottom : 'auto',
+						right : 'auto'
+					};
+					break;
+				case 'bottom left':
+					cssPositionProps = {
+						top	: targetOffset.top + targetHeight + distanceAway,
+						left : targetOffset.left + pointerOffset,
+						right : 'auto',
+						bottom : 'auto'
+					};
+					break;
+				case 'bottom center':
+					cssPositionProps = {
+						top	: targetOffset.top + targetHeight + distanceAway,
+						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
+						bottom : 'auto',
+						right : 'auto'
+					};
+					break;
+				case 'bottom right':
+					cssPositionProps = {
+						top	: targetOffset.top + targetHeight + distanceAway,
+						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset,
+						bottom : 'auto',
+						left : 'auto'
+					};
+					break;
+			}
+
+			// tentatively place on stage
+			this.$el
+				.css( cssPositionProps )
+				.removeClass( 'top left center bottom right' )
+				.addClass( currentPositionBeingTried )
+			;
+
+			if( this._isOutsideOfBoundingRect() ) {
+				// Popup is outside bounding rect. try a new position.
+				currentPositionBeingTried = _getNextPositionToTry( currentPositionBeingTried );
+
+				// if we have tried all the different positions and are now are back at our
+				// original 'preferred' position, then, shit, all positions were out of bounds.
+				allPositionsAreOutOfBounds = currentPositionBeingTried === this.position;
+				if( allPositionsAreOutOfBounds ) done = true;
+			}
+			else done = true;
+
+		} while( ! done );
+
+		return ! allPositionsAreOutOfBounds;
+	},
+
+	_isOutsideOfBoundingRect : function() {
+		var myOffset = this.$el.offset();
+		if( ! myOffset ) return false; // hidden elements have undefined offsets, not much we can do
+
+		var myRect = {
+			top : myOffset.top,
+			right : myOffset.left + this.$el.width(),
+			bottom : myOffset.top + this.$el.outerHeight(),
+			left : myOffset.left
+		};
+
+		var keepWithinRect = _.result( this, 'keepWithinRect' );
+
+		var sidesAreOutOfBounds = {
+			top : ( myRect.top < keepWithinRect.top ),
+			bottom : ( myRect.bottom > keepWithinRect.bottom ),
+			right : ( myRect.right > keepWithinRect.right ),
+			left : ( myRect.left < keepWithinRect.left )
+		};
+
+		return _.contains( sidesAreOutOfBounds, true );
+	},
+
+	_onOptionsChanged : function( changedOptions ) {
+		if( 'target' in changedOptions ) this._setupTargetEl();
+		if( 'contents' in changedOptions ) this.render();
+
+		this.reposition();
+	},
+
+	_getParentView : function() {
+		var parent = null;
+
+		var curElement = this.targetEl;
+		while( curElement.length > 0 && curElement[0] !== lastPossibleViewElement ) {
+			var view = curElement.data( 'view' );
+			if( view && view instanceof Backbone.View ) {
+				parent = view;
+				break;
+			}
+
+			curElement = curElement.parent();
+		}
+
+		return parent;
+	},
+
+	_setState : function( newState ) {
+		this.state = newState;
+		this.$el.attr( 'data-state', this.state );
+	},
+
+	_setupTargetEl : function() {
+		var _this = this;
+
+		this.targetEl = this.target instanceof Backbone.View ? this.target.$el : this.target;
+
+		this.targetEl.on( 'remove', function() {
+			_this.close();
+		} );
+	}
+}, {
+	open : function( options ) {
+		var popupInstance;
+
+		var existingPopupsOfThisSignature = _.filter( openPopups, function( thisPopup ) {
+			return thisPopup.signature === options.signature && thisPopup.state === kState_Open;
+		} );
+
+		if( existingPopupsOfThisSignature.length ) {
+			var popupWeAreGoingTokeep = existingPopupsOfThisSignature.pop();
+
+			popupInstance = popupWeAreGoingTokeep;
+			popupInstance.setOptions( options );
+
+			_.each( existingPopupsOfThisSignature, function( thisExtraPopup ) {
+				thisExtraPopup.close();
+			} );
+		}
+
+		if( ! popupInstance ) {
+			popupInstance = new this( options );
+
+			$( 'body' ).append( popupInstance.$el );
+			popupInstance.render();
+			popupInstance.reposition();
+			openPopups.push( popupInstance );
+		}
+
+		popupInstance._setState( kState_Open );
+
+		return popupInstance;
+	}
+} );
+
+$( window ).resize(function() {
+	_.each( openPopups, function( thisPopup ) {
+		thisPopup.reposition();
+	} );
+} );
+
+function _getNextPositionToTry( position ) {
+	switch( position ) {
+		case 'top left':
+			position = 'bottom left';
+			break;
+		case 'bottom left':
+			position = 'top right';
+			break;
+		case 'top right':
+			position = 'bottom right';
+			break;
+		case 'bottom right':
+			position = 'top center';
+			break;
+		case 'top center':
+			position = 'bottom center';
+			break;
+		case 'bottom center':
+			position = 'right center';
+			break;
+		case 'right center':
+			position = 'left center';
+			break;
+		case 'left center':
+			position = 'top center';
+			break;
+	}
+
+	return position;
+}
+},{"./lib/ui/jquery-plugins/outside-events":14,"backbone":2,"jquery":7,"modui-base":8,"underscore":16}],16:[function(require,module,exports){
 //     Underscore.js 1.7.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

@@ -2,8 +2,7 @@ var $ = require( 'jquery' );
 require('jquery-ui/resizable');
 var _ = require( 'underscore' );
 
-var ModuiPopup = require( './lib/moduiPopup' );
-var BaseView = require( 'modui-base' );
+var ModuiPopup = require( 'modui-popup' );
 var Backbone = require( 'backbone' );
 
 Backbone.$ = $;
@@ -19,17 +18,17 @@ var ExampleTwoView = Backbone.View.extend({
     this.render();
   },
   render: function(){
-    var template = _.template( $("#example_2_template").html(), {} );
+    var template = _.template( $("#example2_template").html(), {} );
     this.$el.html( template(this.model.toJSON()) );
   },
 	events: {
-		"keyup #example_2--input" : "textChanged",
+		"keyup #example2--input" : "textChanged",
 	},
 	textChanged: function(){
-		var newText = $('#example_2--input').val();
+		var newText = $('#example2--input').val();
 		this.model.set('text', newText);
 		this.render();
-		$('#example_2--input').val(newText).focus();
+		$('#example2--input').val(newText).focus();
 	}
 });
 
@@ -42,22 +41,22 @@ var MainView = Backbone.View.extend({
 		this.$el.html( template() );
 	},
 	events: {
-		"focus #example_1--trigger": "exampleOneTrigger",
-		"click #example_2--trigger": "exampleTwoTrigger",
-		"click .e3-radio": "exampleThreeTrigger",
-		"click .ui-resizable-handle": "exampleFourTrigger"
+		"focus #example1--trigger": "exampleOneTrigger",
+		"click #example2--trigger": "exampleTwoTrigger",
+		"click .example3-radio": "exampleThreeTrigger",
+		"click #example4--inner": "exampleFourTrigger"
 	},
 	exampleOneTrigger: function(){
 		ModuiPopup.open({
-			target : $("#example_1--trigger"),
+			target : $("#example1--trigger"),
 			position : 'top center',
 			contents : 'Woah! You actually clicked it!'
 		});
 	},
 	exampleTwoTrigger: function(){
-		var exampleTwoView = new ExampleTwoView({ el: $("#example_2--popup") });
+		var exampleTwoView = new ExampleTwoView({ el: $("#example2--popup") });
 		ModuiPopup.open( {
-			target : $("#example_2--demo"),
+			target : $("#example2--demo"),
 			position : 'right center',
 			contents : exampleTwoView
 		} );
@@ -65,9 +64,9 @@ var MainView = Backbone.View.extend({
 	},
 	example3Contents: "I'm here!",
 	exampleThreeTrigger: function(){
-		var position = $('input[name="example_3--radio"]:checked').val();
+		var position = $('input[name="example3--radio"]:checked').val();
 		ModuiPopup.open( {
-			target : $("#example_3--demo"),
+			target : $("#example3--demo"),
 			position : position,
 			contents : this.example3Contents
 		} );
@@ -82,13 +81,21 @@ var MainView = Backbone.View.extend({
 	},
 	exampleFourTrigger:	function(){
 		ModuiPopup.open({
-			target : $(".example_4--outer"),
-			position : 'right center',
-			contents : 'Watch me dance!'
+			target : $(".example4--inner"),
+			position : 'left center',
+			contents : 'Watch me dance!',
+			keepWithinRect : function(){ return {
+					top : $(".example4--container").offset().top,
+					bottom : $(".example4--container").offset().top + $(".example4--container").height(),
+					left   : $(".example4--container").offset().left,
+					right  : $(".example4--container").offset().left + $(".example4--container").width()
+				};
+			}
 		});
 	}
 });
 
-var mainView = new MainView({ el: $("#main") });;
+var mainView = new MainView({ el: $("#main") });
 
-$("#example_4--demo").resizable();
+var example4ContainerDim = $(".example4--container").width() / 2;
+$(".example4--container").scrollTop(example4ContainerDim/2).scrollLeft(example4ContainerDim);
