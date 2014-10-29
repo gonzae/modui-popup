@@ -35,6 +35,8 @@ var ExampleTwoView = Backbone.View.extend({
 var MainView = Backbone.View.extend({
 	initialize: function(){
 		this.render();
+		var example4ContainerDim = $(".example4--container").width() / 2;
+		$(".example4--container").scrollTop(example4ContainerDim/2).scrollLeft(example4ContainerDim);
 	},
 	render: function(){
 		var template = _.template( $("#main_template").html(), {});
@@ -96,9 +98,6 @@ var MainView = Backbone.View.extend({
 });
 
 var mainView = new MainView({ el: $("#main") });
-
-var example4ContainerDim = $(".example4--container").width() / 2;
-$(".example4--container").scrollTop(example4ContainerDim/2).scrollLeft(example4ContainerDim);
 },{"backbone":2,"jquery":3,"modui-popup":11,"underscore":12}],2:[function(require,module,exports){
 //     Backbone.js 1.1.2
 
