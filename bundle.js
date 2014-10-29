@@ -13,6 +13,7 @@ var ExampleTwoModel = Backbone.Model.extend( {} );
 var exampleTwoModel = new ExampleTwoModel( { text: '' } );
 
 function scrollbarWidth() {
+	// thanks to http://chris-spittles.co.uk/jquery-calculate-scrollbar-width/
   var $inner = $('<div style="width: 100%; height:200px;">test</div>'),
       $outer = $('<div style="width:200px;height:150px; position: absolute; top: 0; left: 0; visibility: hidden; overflow:hidden;"></div>').append($inner),
       inner = $inner[0],
@@ -56,7 +57,7 @@ var MainView = Backbone.View.extend( {
 	initialize: function() {
 		this.render();
 		var example4ContainerDim = ( $( '.example4--outer' ).width() + scrollbarWidth() ) / 2;
-		$( '.example4--outer' ).scrollTop( example4ContainerDim / 2 ).scrollLeft( example4ContainerDim ).css('overflow-y', 'scroll');
+		$( '.example4--outer' ).scrollTop( example4ContainerDim / 2 ).scrollLeft( example4ContainerDim );
 	},
 	render: function(){
 		var template = _.template( $( '#main_template' ).html(), {});
@@ -71,7 +72,7 @@ var MainView = Backbone.View.extend( {
 	exampleOneTrigger: function() {
 		ModuiPopup.open( {
 			target : $( '#example1--trigger' ),
-			position : 'top center',
+			position : 'left center',
 			contents : 'Woah! You actually clicked it!'
 		} );
 	},

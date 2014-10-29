@@ -71,7 +71,7 @@ var MainView = Backbone.View.extend( {
 	exampleOneTrigger: function() {
 		ModuiPopup.open( {
 			target : $( '#example1--trigger' ),
-			position : 'top center',
+			position : 'left center',
 			contents : 'Woah! You actually clicked it!'
 		} );
 	},
