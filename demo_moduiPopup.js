@@ -38,7 +38,7 @@ var ExampleTwoView = Backbone.View.extend( {
   },
   rerender: function() {
   	this.render();
-    $( '#example2--input ').val( this.model.get( 'text' ) ).focus();
+    $( '#example2--input ').focus().val( this.model.get( 'text' ) );
     this.delegateEvents()
   },
 	events: {
@@ -48,7 +48,7 @@ var ExampleTwoView = Backbone.View.extend( {
 		var newText = $( '#example2--input' ).val();
 		this.model.set( 'text', newText );
 		this.render();
-		$( '#example2--input' ).val( newText ).focus();
+		$( '#example2--input' ).focus().val( newText );
 	}
 } );
 
