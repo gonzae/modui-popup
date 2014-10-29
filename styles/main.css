@@ -23,12 +23,21 @@ body, input{
 }
 
 button, input, .example3-table, .nav--link, .code, .example4--inner{
-	background-color: #D1DBBD;
-	border: .1vw solid #3E606F;
+	background-color: #3E606F;
+	border: .1vw solid #193441;
+	color: #FCFFF5;
+}
+
+button, .nav--link, .example4--inner{
+	transition: background-color 0.5s ease;
+}
+
+button:hover, .nav--link:hover, .example4--inner:hover{
+	background-color: #193441;
 }
 
 input{
-	padding: .3vw;
+	padding: .6vw 1vw;
 	max-width: 100%;
 }
 
@@ -93,9 +102,9 @@ code, h1, h2{
 }
 
 .big-button{
-	width: 80%;
-	height: 5vw;
-	font-size: 2vw;
+	width: 14vw;
+	height: 3vw;
+	font-size: 1.8vw;
 	cursor: pointer;
 }
 
@@ -103,6 +112,7 @@ code, h1, h2{
 	overflow: hidden;
 	text-align: center;
 	width: 10vw;
+	padding-bottom: 1vw;
 }
 
 .example2--container input{
@@ -111,14 +121,23 @@ code, h1, h2{
 
 .example3-table{
 	width: 100%;
+	padding: 1vw;
 }
 
 .example3-table tr{
-	height: 2vw;
+	height: 3vw;
 }
 
 .example3-table td{
 	width: 30%;
+}
+
+.example3-table__top{
+	vertical-align: top;
+}
+
+.example3-table__bottom{
+	vertical-align: bottom;
 }
 
 .example3-table__right{
@@ -135,15 +154,16 @@ code, h1, h2{
 
 .example4--container{
 	position: relative;
+	display: inline-block;
 	overflow: scroll;
-	width: 15vw;
-	height: 15vw;
+	width: 14vw;
+	height: 14vw;
 }
 
 .example4--outer{
 	display: inline-block;
-	width: 30vw;
-	height: 30vw;
+	width: 28vw;
+	height: 28vw;
 }
 
 .example4--inner{
@@ -152,6 +172,13 @@ code, h1, h2{
 	margin: 12vw;
 	width: 5vw;
 	height: 5vw;
+	cursor: pointer;
+}
+
+.npm{
+	background-color: #D1DBBD;
+	border: .1vw solid #3E606F;
+	padding: 1vw;
 }
 
 .code{

@@ -7,7 +7,7 @@
 	<body>
 		<script type="text/template" id="example2_template">
 			<div class="example2--container">
-				<p><%= text %></p>
+				<div><%= text %></div>
 				<input id="example2--input">
 			</div>
 		</script>
@@ -31,7 +31,7 @@
 
 			<div id="example2" class="example">
 				<span id="example2--demo" class="example--component example--demo example--demo__left">
-					<button id="example2--trigger" class="big-button">Click</button>
+					<button id="example2--trigger" class="big-button">Backbone!</button>
 					<span id="example2--popup"></span>
 				</span>
 				<span class="example--component example--text">
@@ -45,7 +45,7 @@
 				</span>
 				<span id="example3--demo" class="example--component example--demo">
 					<table class="example3-table">
-						<tr class="example3-table__top">
+						<tr>
 							<td class="example3-table__left">
 								<input class="example3-radio" type="radio" name="example3--radio" value="top left">
 							</td>
@@ -66,7 +66,7 @@
 								<input class="example3-radio" type="radio" name="example3--radio" value="right center">
 							</td>
 						</tr>
-						<tr class="example3-table__bottom">
+						<tr>
 							<td class="example3-table__left">
 								<input class="example3-radio" type="radio" name="example3--radio" value="bottom left">
 							</td>
@@ -82,11 +82,9 @@
 			</div>
 
 			<div id="example4" class="example">
-				<span id="example4--demo" class="example--component example--demo example--demo__left">
-					<span class="example4--container">
-						<span class="example4--outer">
-							<span id="example4--inner" class="example4--inner"></span>
-						</span>
+				<span id="example4--demo" class="example--component example--demo example4--container">
+					<span class="example4--outer">
+						<span id="example4--inner" class="example4--inner"></span>
 					</span>
 				</span>
 				<span class="example--component example--text">
@@ -96,9 +94,7 @@
 
 			<a name="install"></a>
 			<h2 class="section-header">Install</h2>
-			<div class="npm">
-				<code>npm install -g modui-popup</code>
-			</div>
+			<code>npm install -g modui-popup</code>
 			<a name="use"></a>
 			<h2 class="section-header">Use</h2>
 			<p><code>ModuiPopup</code> takes an object with three attributes, <code>target</code>, <code>position</code>, and <code>contents</code>. <code>target</code> sets the target element, which the popup will appear around. <code>position</code> sets where the popup will appear relative to the <code>target</code>. It accepts a two word string, such as 'top left' or 'middle right' or 'bottom center'. Finally, the <code>contents</code> determines what will be presented inside the popup. It accepts either plain strings or backbone views.</p>
