@@ -14,12 +14,19 @@
 		<script type="text/template" id="main_template">
 			<h1 class="banner"><code>modui-popup</code></h1>
 			<nav class="nav">
-				<a class="nav--link" href="#play">Play</a>
 				<a class="nav--link" href="#install">Install</a>
+				<a class="nav--link" href="#demo">Demo</a>
 				<a class="nav--link" href="#use">Use</a>
 			</nav>
-			<a name="play"></a>
-			<h2 class="section-header">Play</h2>
+
+			<a name="install"></a>
+			<h2 class="section-header">Install</h2>
+			<div class="npm">
+				<code>npm install -g modui-popup</code>
+			</div>
+
+			<a name="demo"></a>
+			<h2 class="section-header">Demo</h2>
 			<div id="example1" class="example">
 				<span class="example--component example--text">
 					<code>modui-popup</code> is a simple popup plugin for <code>backbone.js</code>. It allows you to rapidly integrate popups into forms and other interactive components of your app. See that input box over there? Why not click it?
@@ -94,19 +101,50 @@
 				</span>
 			</div>
 
-			<a name="install"></a>
-			<h2 class="section-header">Install</h2>
-			<div class="npm">
-				<code>npm install -g modui-popup</code>
-			</div>
 			<a name="use"></a>
 			<h2 class="section-header">Use</h2>
-			<p><code>ModuiPopup</code> takes an object with three attributes, <code>target</code>, <code>position</code>, and <code>contents</code>. <code>target</code> sets the target element, which the popup will appear around. <code>position</code> sets where the popup will appear relative to the <code>target</code>. It accepts a two word string, such as 'top left' or 'middle right' or 'bottom center'. Finally, the <code>contents</code> determines what will be presented inside the popup. It accepts either plain strings or backbone views.</p>
+			<p>First, require <code>modui-popup</code> into your app:</p>
+			<pre class="code">
+var ModuiPopup = require( 'modui-popup' );</pre>
+			<p>You can then create a popup with the <code>open</code> function:</p>
 			<pre class="code">
 ModuiPopup.open({
-  target : $("#example1--trigger"),
-  position : 'top center',
+  target : $( '#example' ),
   contents : 'Woah! You actually clicked it!'
+});</pre>
+			<p>Note the two key-value pairs, <code>target</code> and <code>contents</code>. <code>target</code> specifies the DOM element beside which the popup will appear. Meanwhile, the <code>contents</code> will appear within the popup. You can assign <code>contents</code> as either a static string or a Backbone view, such as:</p>
+			<pre class="code">
+ModuiPopup.open({
+  target : $( '#example' ),
+  contents : new ExampleView()
+});</pre>
+
+			<h3><code>position</code></h3>
+			<p>In addition to the two required key-value pairs, you can also pass in a <code>position</code>. By default, the popup will appear 'bottom center'--that is, immediately beneath the target element. Valid <code>position</code>s include:<p>
+			<ul>
+				<li>top left</li>
+				<li>top center</li>
+				<li>top right</li>
+				<li>middle left</li>
+				<li>middle right</li>
+				<li>bottom left</li>
+				<li>bottom center</li>
+				<li>bottom right</li>
+			</ul>
+
+			<h3><code>keepWithinRect</code></h3>
+			<p>By default, <code>modui-popup</code> will reposition popups that fall off the screen. You might want a more specific bounding box than the window itself, though. For instance, the fourth example above shows a popup box that is bound within a div. You can get this effect by assigning <code>keepWithinRect</code> a function that returns an object with coordinate key-values:</p>
+			<pre class="code">
+ModuiPopup.open({
+  target : $( '#example' ),
+  contents : new ExampleView(),
+  keepWithinRect : function() { return {
+      top : $( '.example4--container' ).offset().top,
+      bottom : $( '.example4--container' ).offset().top + $( '.example4--container' ).height(),
+      left   : $( '.example4--container' ).offset().left,
+      right  : $( '.example4--container' ).offset().left + $( '.example4--container' ).width()
+    };
+  }
 });</pre>
 		</script>
 		<div id="main" class="main"></div>

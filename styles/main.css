@@ -41,7 +41,7 @@ input{
 	max-width: 100%;
 }
 
-code, h1, h2{
+code, h1, h2, h3{
 	font-family: 'unispace', monospace;
 }
 
@@ -183,4 +183,5 @@ code, h1, h2{
 
 .code{
 	padding: 1vw;
+	font-size: 1vw;
 }
