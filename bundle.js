@@ -12,6 +12,21 @@ var kFadeTime = 70; // keep in sync with kFadeTime in main file
 var ExampleTwoModel = Backbone.Model.extend( {} );
 var exampleTwoModel = new ExampleTwoModel( { text: '' } );
 
+function scrollbarWidth() {
+  var $inner = $('<div style="width: 100%; height:200px;">test</div>'),
+      $outer = $('<div style="width:200px;height:150px; position: absolute; top: 0; left: 0; visibility: hidden; overflow:hidden;"></div>').append($inner),
+      inner = $inner[0],
+      outer = $outer[0];
+   
+  $('body').append(outer);
+  var width1 = inner.offsetWidth;
+  $outer.css('overflow', 'scroll');
+  var width2 = outer.clientWidth;
+  $outer.remove();
+
+  return (width1 - width2);
+}
+
 var ExampleTwoView = Backbone.View.extend( {
   initialize: function() {
     this.model = exampleTwoModel;
@@ -40,8 +55,8 @@ var ExampleTwoView = Backbone.View.extend( {
 var MainView = Backbone.View.extend( {
 	initialize: function() {
 		this.render();
-		var example4ContainerDim = $( '.example4--container' ).width() / 2;
-		$( '.example4--container' ).scrollTop( example4ContainerDim / 2 ).scrollLeft( example4ContainerDim );
+		var example4ContainerDim = ( $( '.example4--outer' ).width() + scrollbarWidth() ) / 2;
+		$( '.example4--outer' ).scrollTop( example4ContainerDim / 2 ).scrollLeft( example4ContainerDim ).css('overflow-y', 'scroll');
 	},
 	render: function(){
 		var template = _.template( $( '#main_template' ).html(), {});
@@ -51,7 +66,7 @@ var MainView = Backbone.View.extend( {
 		'focus #example1--trigger' : 'exampleOneTrigger',
 		'click #example2--trigger' : 'exampleTwoTrigger',
 		'click .example3-radio' : 'exampleThreeTrigger',
-		'click #example4--inner' : 'exampleFourTrigger'
+		'click #example4--trigger' : 'exampleFourTrigger'
 	},
 	exampleOneTrigger: function() {
 		ModuiPopup.open( {
@@ -89,14 +104,14 @@ var MainView = Backbone.View.extend( {
 	},
 	exampleFourTrigger:	function() {
 		ModuiPopup.open( {
-			target : $( '.example4--inner' ),
+			target : $( '.example4--trigger' ),
 			position : 'left center',
 			contents : 'Watch me dance!',
 			keepWithinRect : function(){ return {
-					top : $( '.example4--container' ).offset().top,
-					bottom : $( '.example4--container' ).offset().top + $( '.example4--container' ).height(),
-					left   : $( '.example4--container' ).offset().left,
-					right  : $( '.example4--container' ).offset().left + $( '.example4--container' ).width()
+					top : $( '.example4--outer' ).offset().top,
+					bottom : $( '.example4--outer' ).offset().top + $( '.example4--outer' ).height(),
+					left   : $( '.example4--outer' ).offset().left,
+					right  : $( '.example4--outer' ).offset().left + $( '.example4--outer' ).width()
 				};
 			}
 		});

@@ -22,17 +22,17 @@ body, input{
 	font-size: 1.5vw;
 }
 
-button, input, .example3-table, .nav--link, .code, .example4--inner{
+button, input, .example3-table, .nav--link, .code, .example4--trigger{
 	background-color: #3E606F;
 	border: .1vw solid #193441;
 	color: #FCFFF5;
 }
 
-button, .nav--link, .example4--inner{
+button, .nav--link, .example4--trigger{
 	transition: background-color 0.5s ease;
 }
 
-button:hover, .nav--link:hover, .example4--inner:hover{
+button:hover, .nav--link:hover, .example4--trigger:hover{
 	background-color: #193441;
 }
 
@@ -152,24 +152,25 @@ code, h1, h2, h3{
 	text-align: left;
 }
 
-.example4--container{
+.example4--outer{
 	position: relative;
 	display: inline-block;
 	overflow: scroll;
+	overflow-y: hidden;
 	width: 14vw;
 	height: 14vw;
 }
 
-.example4--outer{
+.example4--inner{
 	display: inline-block;
 	width: 28vw;
 	height: 28vw;
 }
 
-.example4--inner{
+.example4--trigger{
 	display: inline-block;
-	border: thin solid black;
-	margin: 12vw;
+	border: 0;
+	margin: 11.5vw;
 	width: 5vw;
 	height: 5vw;
 	cursor: pointer;
