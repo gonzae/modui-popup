@@ -139,10 +139,10 @@ ModuiPopup.open({
   target : $( '#example' ),
   contents : new ExampleView(),
   keepWithinRect : function() { return {
-      top : $( '.example4--container' ).offset().top,
-      bottom : $( '.example4--container' ).offset().top + $( '.example4--container' ).height(),
-      left   : $( '.example4--container' ).offset().left,
-      right  : $( '.example4--container' ).offset().left + $( '.example4--container' ).width()
+      top : $( '#example' ).offset().top,
+      bottom : $( '#example' ).offset().top + $( '#example' ).height(),
+      left   : $( '#example' ).offset().left,
+      right  : $( '#example' ).offset().left + $( '#example' ).width()
     };
   }
 });</pre>
