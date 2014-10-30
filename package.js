@@ -120,19 +120,6 @@ var MainView = Backbone.View.extend( {
 });
 
 var mainView = new MainView( { el: $( '#main' ) } );
-
-var exampleFiveTrigger = function() {
-	var position = $( 'input[name="example5--radio"]:checked' ).val();
-	ModuiPopup.open( {
-		target : $( '#example5--demo' ),
-		position : position,
-		contents : 'position'
-	} )
-}
-
-$(".example5--radio").on("click", function(){
-	exampleFiveTrigger();
-})
 },{"backbone":2,"jquery":3,"modui-popup":11,"underscore":12}],2:[function(require,module,exports){
 //     Backbone.js 1.1.2
 
@@ -13264,7 +13251,7 @@ module.exports = Super.extend( {
 
 		var popupWidth  = Math.round( this.$el.width() );
 		var popupHeight = Math.round( this.$el.outerHeight() );
-    var kPointerHeight = 6;
+		var kPointerHeight = 6;
 
 		//var offsetParent = $( 'html' ).get(0) !== this.targetEl.offsetParent().get( 0 ) ? this.targetEl.offsetParent() : $( window );
 		var offsetParent = $( window );
@@ -13284,30 +13271,30 @@ module.exports = Super.extend( {
 
 		do {  // run through all our different positions to find one that works
 			switch( currentPositionBeingTried ) {
-        case 'top left':
-          cssPositionProps = {
-            bottom : 'auto',
-            left : targetOffset.left + pointerOffset,
-            top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
-            right : 'auto'
-          };
-          break;
-        case 'top center':
-          cssPositionProps = {
-            bottom : 'auto',
-            left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
-            top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
-            right : 'auto'
-          };
-          break;
-        case 'top right':
-          cssPositionProps = {
-            top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
-            bottom : 'auto',
-            right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset,
-            left : 'auto'
-          };
-          break;
+				case 'top left':
+					cssPositionProps = {
+						bottom : 'auto',
+						left : targetOffset.left + pointerOffset,
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
+						right : 'auto'
+					};
+					break;
+				case 'top center':
+					cssPositionProps = {
+						bottom : 'auto',
+						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
+						right : 'auto'
+					};
+					break;
+				case 'top right':
+					cssPositionProps = {
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
+						bottom : 'auto',
+						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset,
+						left : 'auto'
+					};
+					break;
 				case 'left center':
 					cssPositionProps = {
 						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ),
