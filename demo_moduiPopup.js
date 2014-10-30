@@ -105,7 +105,7 @@ var MainView = Backbone.View.extend( {
 	exampleFourTrigger:	function() {
 		var popup = ModuiPopup.open( {
 			target : $( '.example4--trigger' ),
-			position : 'left center',
+			position : 'top center',
 			contents : 'Watch me dance!',
 			keepWithinRect : function(){ return {
 					top : $( '.example4--outer' ).offset().top,
