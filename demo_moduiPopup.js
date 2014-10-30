@@ -103,7 +103,7 @@ var MainView = Backbone.View.extend( {
 		}
 	},
 	exampleFourTrigger:	function() {
-		ModuiPopup.open( {
+		var popup = ModuiPopup.open( {
 			target : $( '.example4--trigger' ),
 			position : 'left center',
 			contents : 'Watch me dance!',
@@ -114,7 +114,10 @@ var MainView = Backbone.View.extend( {
 					right  : $( '.example4--outer' ).offset().left + $( '.example4--outer' ).width()
 				};
 			}
-		});
+		} );
+		$( '.example4--outer' ).on( 'scroll', function() {
+			popup.reposition();
+		} );
 	}
 });
 
