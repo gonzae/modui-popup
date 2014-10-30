@@ -104,6 +104,7 @@ module.exports = Super.extend( {
 
 		var popupWidth  = Math.round( this.$el.width() );
 		var popupHeight = Math.round( this.$el.outerHeight() );
+		var kPointerHeight = 6;
 
 		//var offsetParent = $( 'html' ).get(0) !== this.targetEl.offsetParent().get( 0 ) ? this.targetEl.offsetParent() : $( window );
 		var offsetParent = $( window );
@@ -125,24 +126,24 @@ module.exports = Super.extend( {
 			switch( currentPositionBeingTried ) {
 				case 'top left':
 					cssPositionProps = {
-						bottom : parentHeight - targetOffset.top + distanceAway,
+						bottom : 'auto',
 						left : targetOffset.left + pointerOffset,
-						top : 'auto',
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
 						right : 'auto'
 					};
 					break;
 				case 'top center':
 					cssPositionProps = {
-						bottom : parentHeight - targetOffset.top + distanceAway,
+						bottom : 'auto',
 						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
-						top : 'auto',
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
 						right : 'auto'
 					};
 					break;
 				case 'top right':
 					cssPositionProps = {
-						top	: 'auto',
-						bottom : parentHeight - targetOffset.top + distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
+						bottom : 'auto',
 						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset,
 						left : 'auto'
 					};
