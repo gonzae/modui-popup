@@ -89,7 +89,7 @@ code, h1, h2, h3{
 }
 
 .example--text{
-	width: 70%;
+	width: 69%;
 }
 
 .example--demo{
@@ -190,7 +190,11 @@ div.modui-popup div.html-contents {
 	min-width: 3.5vw;
 }
 
-@media(max-width: 700px){
+@media(max-width: 900px){
+	body{
+		overflow-x: hidden;
+	}
+	
 	body, input{
 		font-size: 3vw;
 	}
