@@ -185,3 +185,47 @@ code, h1, h2, h3{
 	padding: 1vw;
 	font-size: 1.3vw;
 }
+
+div.modui-popup div.html-contents {
+	min-width: 3.5vw;
+}
+
+@media(max-width: 700px){
+	body, input{
+		font-size: 3vw;
+	}
+
+	.code{
+		font-size: 2.5vw;
+	}
+
+	.banner{
+		font-size: 8vw;
+	}
+
+	.section-header{
+		font-size: 5vw;
+	}
+
+	.modui-popup{
+		font-size: 2.5vw !important;
+	}
+
+	.big-button{
+		width: 20vw;
+		height: 5vw;
+		font-size: 3.5vw;
+	}
+
+	.example2--container{
+		width: 17vw;
+	}
+
+	.example2--container input{
+		width: 15vw;
+	}
+
+	.main{
+		max-width: 75vw;
+	}
+}
