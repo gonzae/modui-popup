@@ -6,7 +6,7 @@ About
 Install
 =======
 
-`npm install -g modui-popup`
+npm install -g modui-popup
 
 Demo
 ====
@@ -33,7 +33,7 @@ Note the two key-value pairs, `target` and `contents`. `target` specifies the DO
 		  contents : new ExampleView()
 		} );
 
-`position`
+position
 ----------
 
 In addition to the two required key-value pairs, you can also pass in a `position`. By default, the popup will appear 'bottom center'. Valid `position`s include:
@@ -47,7 +47,7 @@ In addition to the two required key-value pairs, you can also pass in a `positio
 * bottom center
 * bottom right
 
-`keepWithinRect`
+keepWithinRect
 ----------------
 
 By default, `modui-popup` will reposition popups that fall off the screen. You might want a more specific bounding box than the window itself, though. In the fourth example above, we show a popup box that is bound within a div. You can get this effect by assigning `keepWithinRect` a function that returns an object with coordinate key-values:
