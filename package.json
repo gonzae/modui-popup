@@ -1,20 +1,35 @@
 {
   "name": "modui-popup-demo",
   "version": "0.0.0",
-  "description": "",
-  "main": "demo_moduiPopup.js",
-  "style": [
-    "**/*.css"
-  ],
-  "keywords": [
-    "modui"
-  ],
-  "author": "Rotunda Software",
-  "license": "ISC",
+  "description": "modui popup demo",
+  "main": "moduiPopupDemo.js",
+  "style": "*.scss",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rotundasoftware/modui-popup.git"
+  },
   "dependencies": {
     "backbone": "^1.1.2",
+    "bb-collection-view": "^0.11.4",
     "jquery": "^2.1.1",
-    "modui-popup": "0.0.0",
-    "underscore": "^1.7.0"
-  }
+    "modui-base": "^0.1.5",
+    "modui-example-page": "0.0.0",
+    "node-underscorify": "0.0.12",
+    "sass-css-stream": "^0.1.1",
+    "underscore": "^1.6.0",
+    "underscorify": "^1.0.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "transforms": [
+    "sass-css-stream",
+    "node-underscorify"
+  ],
+  "bugs": {
+    "url": "https://github.com/rotundasoftware/modui-popup/issues"
+  },
+  "homepage": "http://rotundasoftware.github.io/modui-popup/"
 }

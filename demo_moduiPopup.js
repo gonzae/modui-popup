@@ -1,124 +1,85 @@
-var $ = require( 'jquery' );
-var _ = require( 'underscore' );
+// var $ = require( 'jquery' );
+// var _ = require( 'underscore' );
 
-var ModuiPopup = require( 'modui-popup' );
-var Backbone = require( 'backbone' );
+// var Super = require( 'modui-base' );
 
-Backbone.$ = $;
+// var ModuiPopup = require( 'modui-popup' );
+// var Backbone = require( 'backbone' );
 
-var kFadeTime = 70; // keep in sync with kFadeTime in main file
+// Backbone.$ = $;
 
-var ExampleTwoModel = Backbone.Model.extend( {} );
-var exampleTwoModel = new ExampleTwoModel( { text: '' } );
+// var ExampleOneView = require( './exampleViews/views/exampleOne' );
+// var ExampleTwoView = require( './exampleViews/views/exampleTwo' );
+// var ExampleThreeView = require( './exampleViews/views/exampleThree' );
+// var ExampleFourView = require( './exampleViews/views/exampleFour' );
 
-function scrollbarWidth() {
-	// thanks to http://chris-spittles.co.uk/jquery-calculate-scrollbar-width/
-  var $inner = $('<div style="width: 100%; height:200px;">test</div>'),
-      $outer = $('<div style="width:200px;height:150px; position: absolute; top: 0; left: 0; visibility: hidden; overflow:hidden;"></div>').append($inner),
-      inner = $inner[0],
-      outer = $outer[0];
+// var kFadeTime = 70; // keep in sync with kFadeTime in main file
+
+// function scrollbarWidth() {
+// 	// thanks to http://chris-spittles.co.uk/jquery-calculate-scrollbar-width/
+//   var $inner = $('<div style="width: 100%; height:200px;">test</div>'),
+//       $outer = $('<div style="width:200px;height:150px; position: absolute; top: 0; left: 0; visibility: hidden; overflow:hidden;"></div>').append($inner),
+//       inner = $inner[0],
+//       outer = $outer[0];
    
-  $('body').append(outer);
-  var width1 = inner.offsetWidth;
-  $outer.css('overflow', 'scroll');
-  var width2 = outer.clientWidth;
-  $outer.remove();
+//   $('body').append(outer);
+//   var width1 = inner.offsetWidth;
+//   $outer.css('overflow', 'scroll');
+//   var width2 = outer.clientWidth;
+//   $outer.remove();
 
-  return (width1 - width2);
-}
+//   return (width1 - width2);
+// }
 
-var ExampleTwoView = Backbone.View.extend( {
-  initialize: function() {
-    this.model = exampleTwoModel;
-    this.render();
-  },
-  render: function() {
-    var template = _.template( $( '#example2_template' ).html(), {} );
-    this.$el.html( template( this.model.toJSON() ) );
-  },
-  rerender: function() {
-  	this.render();
-    $( '#example2--input ').focus().val( this.model.get( 'text' ) );
-    this.delegateEvents()
-  },
-	events: {
-		'keyup #example2--input' : 'textChanged',
-	},
-	textChanged: function() {
-		var newText = $( '#example2--input' ).val();
-		this.model.set( 'text', newText );
-		this.render();
-		$( '#example2--input' ).focus().val( newText );
-	}
+// var MainView = Super.extend( {
+// 	initialize: function() {
+// 		Backbone.Subviews.add( this );
+// 		this.render();
+// 		var example4ContainerDim = ( $( '.example4--outer' ).width() + scrollbarWidth() ) / 2;
+// 		$( '.example4--outer' ).scrollTop( example4ContainerDim / 2 ).scrollLeft( example4ContainerDim );
+// 	},
+//   subviewCreators : {
+//   	"exampleOne" : function() {
+//   		return new ExampleOneView( { } );
+//   	},
+//   	"exampleTwo" : function() {
+//   		return new ExampleTwoView( { } );
+//   	},
+//   	"exampleThree" : function() {
+//   		return new ExampleThreeView( { } );
+//   	},
+//   	"exampleFour" : function() {
+//   		return new ExampleFourView( { } );
+//   	}
+//   },
+// 	render: function(){
+// 		var template = _.template( $( '#main_template' ).html(), {});
+// 		this.$el.html( template() );
+// 	}
+// });
+
+// var mainView = new MainView( { el: $( '#main' ) } );
+
+var ModuiExamplePage = require( 'modui-example-page' );
+var Backbone = require( 'backbone' );
+var $ = require( 'jquery' );
+var rainbow = require( './lib/rainbow' );
+
+var ExampleOneView = require( './exampleViews/one/view' );
+var ExampleTwoView = require( './exampleViews/two/view' );
+var ExampleThreeView = require( './exampleViews/three/view' );
+var ExampleFourView = require( './exampleViews/four/view' );
+
+var examplePage = new ModuiExamplePage( {
+  title : 'ModuiPopup',
+  description : 'modui-popup is a simple popup plugin for backbone.js.',
+  examples : [
+    { title : 'Text Content', view : new ExampleOneView },
+    { title : 'View Content', view : new ExampleTwoView },
+    { title : 'Positioning', view : new ExampleThreeView },
+    { title : 'Bounding Box', view : new ExampleFourView }
+  ]
 } );
 
-var MainView = Backbone.View.extend( {
-	initialize: function() {
-		this.render();
-		var example4ContainerDim = ( $( '.example4--outer' ).width() + scrollbarWidth() ) / 2;
-		$( '.example4--outer' ).scrollTop( example4ContainerDim / 2 ).scrollLeft( example4ContainerDim );
-	},
-	render: function(){
-		var template = _.template( $( '#main_template' ).html(), {});
-		this.$el.html( template() );
-	},
-	events: {
-		'focus #example1--trigger' : 'exampleOneTrigger',
-		'click #example2--trigger' : 'exampleTwoTrigger',
-		'click .example3-radio' : 'exampleThreeTrigger',
-		'click #example4--trigger' : 'exampleFourTrigger'
-	},
-	exampleOneTrigger: function() {
-		ModuiPopup.open( {
-			target : $( '#example1--trigger' ),
-			position : 'left center',
-			contents : 'Woah! You actually clicked it!'
-		} );
-	},
-	exampleTwoView: null,
-	exampleTwoTrigger: function(){
-		if (!this.exampleTwoView) this.exampleTwoView = new ExampleTwoView( { el: $('#example2--popup') } );
-		ModuiPopup.open( {
-			target : $( '#example2--demo' ),
-			position : 'right center',
-			contents : this.exampleTwoView
-		} );
-		this.exampleTwoView.rerender();
-	},
-	example3Contents: 'I\'m here!',
-	exampleThreeTrigger: function() {
-		var position = $( 'input[name="example3--radio"]:checked' ).val();
-		ModuiPopup.open( {
-			target : $( '#example3--demo' ),
-			position : position,
-			contents : this.example3Contents
-		} );
-		var rando = Math.random();
-		switch ( true ){
-			case ( rando < .2 ) : this.example3Contents = 'Haha! Now I\'m here!'; break;
-			case ( rando < .4 ) : this.example3Contents = 'Over here!'; break;
-			case ( rando < .6 ) : this.example3Contents = 'Psych!'; break;
-			case ( rando < .8 ) : this.example3Contents = 'No, I\'m over here!'; break;
-			default : this.example3Contents = 'Here now!'; break;
-		}
-	},
-	exampleFourTrigger:	function() {
-		var popup = ModuiPopup.open( {
-			target : $( '.example4--trigger' ),
-			position : 'top center',
-			contents : 'Dance!',
-			keepWithinRect : function(){ return {
-					top : $( '.example4--outer' ).offset().top,
-					bottom : $( '.example4--outer' ).offset().top + $( '.example4--outer' ).height(),
-					left   : $( '.example4--outer' ).offset().left,
-					right  : $( '.example4--outer' ).offset().left + $( '.example4--outer' ).width()
-				};
-			}
-		} );
-		$( '.example4--outer' ).on( 'scroll', function() {
-			popup.reposition();
-		} );
-	}
-});
-
-var mainView = new MainView( { el: $( '#main' ) } );
+$( 'body' ).append( examplePage.$el );
+examplePage.render();
