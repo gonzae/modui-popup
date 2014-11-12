@@ -1,6 +1,6 @@
 {
   "name": "modui-popup",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "",
   "main": "moduiPopup.js",
   "test": "test/test_moduiPopup.js",

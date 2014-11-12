@@ -278,19 +278,21 @@ module.exports = Super.extend( {
 	open : function( options ) {
 		var popupInstance;
 
-		var existingPopupsOfThisSignature = _.filter( openPopups, function( thisPopup ) {
-			return thisPopup.signature === options.signature && thisPopup.state === kState_Open;
-		} );
-
-		if( existingPopupsOfThisSignature.length ) {
-			var popupWeAreGoingTokeep = existingPopupsOfThisSignature.pop();
-
-			popupInstance = popupWeAreGoingTokeep;
-			popupInstance.setOptions( options );
-
-			_.each( existingPopupsOfThisSignature, function( thisExtraPopup ) {
-				thisExtraPopup.close();
+		if( options.signature ) {
+			var existingPopupsOfThisSignature = _.filter( openPopups, function( thisPopup ) {
+				return thisPopup.signature === options.signature && thisPopup.state === kState_Open;
 			} );
+
+			if( existingPopupsOfThisSignature.length ) {
+				var popupWeAreGoingTokeep = existingPopupsOfThisSignature.pop();
+
+				popupInstance = popupWeAreGoingTokeep;
+				popupInstance.setOptions( options );
+
+				_.each( existingPopupsOfThisSignature, function( thisExtraPopup ) {
+					thisExtraPopup.close();
+				} );
+			}
 		}
 
 		if( ! popupInstance ) {
