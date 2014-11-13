@@ -14,10 +14,10 @@ var examplePage = new ModuiExamplePage( {
   packageUrl : 'https://github.com/rotundasoftware/modui-popup',
   repositoryUrl : 'https://github.com/rotundasoftware/modui-popup',
   examples : [
-    { title : 'Text Content', view : new ExampleOneView() },
-    { title : 'View Content', view : new ExampleTwoView() },
+    { title : 'Text content', view : new ExampleOneView() },
+    { title : 'View content', view : new ExampleTwoView() },
     { title : 'Positioning', view : new ExampleThreeView() },
-    { title : 'Bounding Box', view : new ExampleFourView() }
+    { title : 'Keep within rect', view : new ExampleFourView() }
   ]
 } );
 
