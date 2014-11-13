@@ -4,9 +4,7 @@
   "description": "",
   "main": "moduiPopup.js",
   "test": "test/test_moduiPopup.js",
-  "style": [
-    "**/*.scss"
-  ],
+  "style": "*.scss",
   "keywords": [
     "modui"
   ],
