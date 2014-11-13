@@ -1,6 +1,6 @@
 <div class="demo-container">
 	<p>
-		Popup can also display other views as their contents.
+		Popups can also use other views as their contents.
 	</p>
 	<div class="big-button trigger">Click</div>
 	<span class="popup"></span>

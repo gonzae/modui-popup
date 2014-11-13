@@ -44,12 +44,7 @@
 ModuiPopup.open( {
   target : this.ui.target,
   position : this.$el.find( 'input:checked' ).val(),
-  contents : [
-    'I\'m here!',
-    'Over here!',
-    'Psych!',
-    'No, I\'m over here!'
-  ][ Math.floor( Math.random() * 4 ) ],
+  contents : this.$el.find( 'input:checked' ).val(),
   signature : 'example3'
 } );</code></pre>
 	</div>
