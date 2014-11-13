@@ -10,7 +10,7 @@ var ExampleFourView = require( './exampleViews/four/view' );
 
 var examplePage = new ModuiExamplePage( {
   title : 'modui-popup',
-  description : 'modui-popup is a simple popup plugin that is part of the backbone.js based modui suite.',
+  description : 'A popup balloon for the backbone.js based modui suite. Demos courtesy of <a href="https://github.com/timothycommoner">Tim Commoner</a>.',
   packageUrl : 'https://github.com/rotundasoftware/modui-popup',
   repositoryUrl : 'https://github.com/rotundasoftware/modui-popup',
   examples : [
