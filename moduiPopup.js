@@ -104,7 +104,7 @@ module.exports = Super.extend( {
 
 		var popupWidth  = Math.round( this.$el.width() );
 		var popupHeight = Math.round( this.$el.outerHeight() );
-		var kPointerHeight = 6;
+		var kPointerHeight = 10;
 
 		//var offsetParent = $( 'html' ).get(0) !== this.targetEl.offsetParent().get( 0 ) ? this.targetEl.offsetParent() : $( window );
 		var offsetParent = $( window );
