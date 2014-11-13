@@ -17,6 +17,7 @@
     "jquery": "^2.1.1",
     "modui-base": "^0.1.5",
     "modui-example-page": "0.0.0",
+    "modui-popup": "0.0.2",
     "node-underscorify": "0.0.12",
     "sass-css-stream": "^0.1.1",
     "underscore": "^1.6.0",

@@ -4,12 +4,9 @@ var ModuiPopup = require( 'modui-popup' );
 var template = require( './template.tpl' );
 
 module.exports = Super.extend( {
-	initialize: function() {
-		this.render();
-	},
 	render: function(){
 		this.$el.html( template() );
-		this.resolveHandles(); 
+		this.resolveHandles();
 	},
 	ui : {
     "trigger" : ".trigger!"
