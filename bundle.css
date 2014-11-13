@@ -328,7 +328,8 @@ input {
 .example3 .table, .example4 .trigger, .big-button {
   background-color: #71A2E4;
   border: thin solid #193441;
-  color: #FCFFF5; }
+  color: #FCFFF5;
+  text-align: center; }
 
 .big-button {
   width: 200px;

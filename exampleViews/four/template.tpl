@@ -10,7 +10,9 @@
 </div>
 <div class="code-container">
 	<div class="code-wrapper">
-<pre><code data-language="javascript">var outer = this.ui.outer;
+<pre><code data-language="javascript">var ModuiPopup = require( 'modui-popup' );
+
+var outer = this.ui.outer;
 var popup = ModuiPopup.open( {
   target : this.ui.inner,
   position : 'top center',

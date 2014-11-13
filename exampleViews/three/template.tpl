@@ -39,14 +39,16 @@
 </div>
 <div class="code-container">
 	<div class="code-wrapper">
-<pre><code data-language="javascript">ModuiPopup.open( {
+<pre><code data-language="javascript">var ModuiPopup = require( 'modui-popup' );
+
+ModuiPopup.open( {
   target : this.ui.target,
   position : this.$el.find( 'input:checked' ).val(),
   contents : [
-  	'I\'m here!',
-	'Over here!',
-	'Psych!',
-	'No, I\'m over here!'
+    'I\'m here!',
+    'Over here!',
+    'Psych!',
+    'No, I\'m over here!'
   ][ Math.floor( Math.random() * 4 ) ],
   signature : 'example3'
 } );</code></pre>

@@ -6,7 +6,9 @@
 </div>
 <div class="code-container">
 	<div class="code-wrapper">
-<pre><code data-language="javascript">ModuiPopup.open( {
+<pre><code data-language="javascript">var ModuiPopup = require( 'modui-popup' );
+
+ModuiPopup.open( {
   target : this.ui.textBox,
   position : 'right center',
   contents : 'Woah! You actually <b>clicked</b> me!'
