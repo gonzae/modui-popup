@@ -12,10 +12,14 @@
   ],
   "author": "Rotunda Software",
   "license": "ISC",
+  "transforms": [
+    "sass-css-stream"
+  ],
   "dependencies": {
     "backbone": "^1.1.2",
     "jquery": "^2.1.1",
     "modui-base": "^0.1.5",
+    "sass-css-stream": "^0.1.1",
     "underscore": "^1.7.0"
   },
   "devDependencies": {
