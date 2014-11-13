@@ -204,7 +204,9 @@ header {
   padding: 12px 0 10px 0;
   border-bottom: 1px solid #9ebaff;
   background: #ebf0ff;
-  z-index: 100; }
+  z-index: 10000;
+  opacity: 1;
+  transition: opacity 0.1s; }
 
 .gh-icon-blue {
   opacity: 0; }
