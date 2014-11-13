@@ -1,3 +1,5 @@
+
+
 body {
 	margin: 0;
 	color: #333;
@@ -8,7 +10,7 @@ pre {
 	overflow: auto;
 	float: left;
 	width: 437px;
-	height: 174px;
+	min-height: 174px;
 	padding: 18px 15px;
 	margin: 0;
 	border: 1px solid #9c9c9c;
@@ -21,6 +23,11 @@ pre {
 	border-radius: 4px;
 	background: #23293e;
 	cursor: pointer;
+}
+
+input {
+	padding: 5px;
+	border-radius: 3px;
 }
 
 .demo-container {
@@ -43,8 +50,8 @@ pre {
 	float: left;
 }
 
-.example3-table, .example4--trigger, .big-button {
-	background-color: #3E606F;
+.example3 .table, .example4 .trigger, .big-button {
+	background-color: #71A2E4;
 	border: thin solid #193441;
 	color: #FCFFF5;
 }
@@ -57,60 +64,4 @@ pre {
 .example2-popup-element{
 	width: 200px;
 	margin: 15px;
-}
-
-.example3-table{
-	width: 100%;
-	padding: 5px;
-}
-
-.example3-table tr{
-	height: 30px;
-}
-
-.example3-table td{
-	width: 30%;
-}
-
-.example3-table__top{
-	vertical-align: top;
-}
-
-.example3-table__bottom{
-	vertical-align: bottom;
-}
-
-.example3-table__right{
-	text-align: right;
-}
-
-.example3-table__center{
-	text-align: center;
-}
-
-.example3-table__left{
-	text-align: left;
-}
-
-.example4--outer{
-	position: relative;
-	display: inline-block;
-	overflow: scroll;
-	width: 350px;
-	height: 185px;
-}
-
-.example4--inner{
-	display: inline-block;
-  width: 600px;
-  height: 250px;
-}
-
-.example4--trigger{
-	display: inline-block;
-	border: 0;
-	margin: 100px 250px;
-	width: 100px;
-	height: 100px;
-	cursor: pointer;
 }

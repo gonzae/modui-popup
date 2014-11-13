@@ -1,0 +1,95 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'link' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.32
+4 verbose linkPkg /Users/david_beck/Documents/git/modui-popup
+5 verbose link build target /usr/local/lib/node_modules/modui-popup
+6 verbose install where,what [ '/Users/david_beck/Documents/git/modui-popup', [] ]
+7 verbose readDependencies using package.json deps
+8 verbose install where, deps [ '/Users/david_beck/Documents/git/modui-popup',
+8 verbose install   [ 'backbone',
+8 verbose install     'jquery',
+8 verbose install     'modui-base',
+8 verbose install     'sass-css-stream',
+8 verbose install     'underscore',
+8 verbose install     'should' ] ]
+9 info preinstall modui-popup@0.0.2
+10 warn package.json modui-base@0.1.5 No repository field.
+11 warn package.json modui-example-page@0.0.0 No README data
+12 verbose readDependencies using package.json deps
+13 verbose already installed skipping sass-css-stream@^0.1.1 /Users/david_beck/Documents/git/modui-popup
+14 verbose already installed skipping underscore@^1.7.0 /Users/david_beck/Documents/git/modui-popup
+15 verbose already installed skipping should@^4.1.0 /Users/david_beck/Documents/git/modui-popup
+16 verbose already installed skipping backbone@^1.1.2 /Users/david_beck/Documents/git/modui-popup
+17 verbose already installed skipping jquery@^2.1.1 /Users/david_beck/Documents/git/modui-popup
+18 verbose already installed skipping modui-base@^0.1.5 /Users/david_beck/Documents/git/modui-popup
+19 silly resolved []
+20 info build /Users/david_beck/Documents/git/modui-popup
+21 verbose linkStuff [ false, false, false, '/Users/david_beck/Documents/git' ]
+22 info linkStuff modui-popup@0.0.2
+23 verbose linkBins modui-popup@0.0.2
+24 verbose linkMans modui-popup@0.0.2
+25 verbose rebuildBundles modui-popup@0.0.2
+26 verbose rebuildBundles [ 'backbone',
+26 verbose rebuildBundles   'jquery',
+26 verbose rebuildBundles   'jquery-ui',
+26 verbose rebuildBundles   'modui-base',
+26 verbose rebuildBundles   'modui-example-page',
+26 verbose rebuildBundles   'modui-popup',
+26 verbose rebuildBundles   'node-underscorify',
+26 verbose rebuildBundles   'sass-css-stream',
+26 verbose rebuildBundles   'should',
+26 verbose rebuildBundles   'underscore' ]
+27 verbose rebuild bundle /Users/david_beck/Documents/git/modui-popup/node_modules/jquery-ui
+28 info build /Users/david_beck/Documents/git/modui-popup/node_modules/jquery-ui
+29 info preinstall jquery-ui@1.10.5
+30 verbose linkStuff [ false,
+30 verbose linkStuff   false,
+30 verbose linkStuff   false,
+30 verbose linkStuff   '/Users/david_beck/Documents/git/modui-popup/node_modules' ]
+31 info linkStuff jquery-ui@1.10.5
+32 verbose linkBins jquery-ui@1.10.5
+33 verbose linkMans jquery-ui@1.10.5
+34 verbose rebuildBundles jquery-ui@1.10.5
+35 info install jquery-ui@1.10.5
+36 info postinstall jquery-ui@1.10.5
+37 verbose rebuild bundle /Users/david_beck/Documents/git/modui-popup/node_modules/modui-example-page
+38 info build /Users/david_beck/Documents/git/modui-popup/node_modules/modui-example-page
+39 info preinstall modui-example-page@0.0.0
+40 verbose linkStuff [ false,
+40 verbose linkStuff   false,
+40 verbose linkStuff   false,
+40 verbose linkStuff   '/Users/david_beck/Documents/git/modui-popup/node_modules' ]
+41 info linkStuff modui-example-page@0.0.0
+42 verbose linkBins modui-example-page@0.0.0
+43 verbose linkMans modui-example-page@0.0.0
+44 verbose rebuildBundles modui-example-page@0.0.0
+45 verbose rebuildBundles [ 'backbone',
+45 verbose rebuildBundles   'bb-collection-view',
+45 verbose rebuildBundles   'css-img-datauri-stream',
+45 verbose rebuildBundles   'jquery',
+45 verbose rebuildBundles   'modui-base',
+45 verbose rebuildBundles   'node-underscorify',
+45 verbose rebuildBundles   'sass-css-stream',
+45 verbose rebuildBundles   'underscore',
+45 verbose rebuildBundles   'underscorify' ]
+46 info install modui-example-page@0.0.0
+47 info postinstall modui-example-page@0.0.0
+48 verbose rebuild bundle /Users/david_beck/Documents/git/modui-popup/node_modules/modui-popup
+49 info build /Users/david_beck/Documents/git/modui-popup/node_modules/modui-popup
+50 error Failed to parse json
+50 error Unexpected string
+51 error File: /Users/david_beck/Documents/git/modui-popup/node_modules/modui-popup/package.json
+52 error Failed to parse package.json data.
+52 error package.json must be actual JSON, not just JavaScript.
+52 error
+52 error This is not a bug in npm.
+52 error Tell the package author to fix their package.json file. JSON.parse
+53 error System Darwin 14.0.0
+54 error command "node" "/usr/local/bin/npm" "link"
+55 error cwd /Users/david_beck/Documents/git/modui-popup
+56 error node -v v0.10.32
+57 error npm -v 1.4.28
+58 error file /Users/david_beck/Documents/git/modui-popup/node_modules/modui-popup/package.json
+59 error code EJSONPARSE
+60 verbose exit [ 1, true ]

@@ -1,15 +1,15 @@
 <div class="demo-container">
 	<p>
-		<code>modui-popup</code> is a simple popup plugin for <code>backbone.js</code>. Unsure what that means? Then why not click on that input box over there?
+		Couldn't be easier to popup text or html content.
 	</p>
 	<input class="trigger" placeholder="click me">
 </div>
 <div class="code-container">
 	<div class="code-wrapper">
-		<pre><code data-language="javascript">ModuiPopup.open( {
-  target : this.ui.trigger,
+<pre><code data-language="javascript">ModuiPopup.open( {
+  target : this.ui.textBox,
   position : 'right center',
-  contents : 'Woah! You actually clicked it!'
+  contents : 'Woah! You actually <b>clicked</b> me!'
 } );</code></pre>
 	</div>
 </div>

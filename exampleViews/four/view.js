@@ -4,32 +4,25 @@ var ModuiPopup = require( 'modui-popup' );
 var template = require( './template.tpl' );
 
 module.exports = Super.extend( {
-	initialize: function() {
-		this.render();
-	},
-	render: function(){
-		this.$el.html( template() );
-		this.resolveHandles(); 
-	},
+	template : template,
 	ui : {
-		"trigger"		:  ".trigger!",
-    "outer"		: '.example4--outer!'
-  },
-	events: {
-		'click trigger' : 'exampleFourTrigger'
+		"inner"		:  ".trigger!",
+		"outer"		: '.outer!'
 	},
-	exampleFourTrigger:	function() {
+	render : function() {
+		Super.prototype.render.apply( this, arguments );
+
 		var outer = this.ui.outer;
 		var popup = ModuiPopup.open( {
-			target : this.ui.trigger,
+			target : this.ui.inner,
 			position : 'top center',
 			contents : 'Dance!',
-			keepWithinRect : function(){ return {
-					top : outer.offset().top,
-					bottom : outer.offset().top + outer.height(),
-					left   : outer.offset().left,
-					right  : outer.offset().left + outer.width()
-				};
+			closeOnOutsideClick : false,
+			keepWithinRect : {
+				top    : outer.offset().top,
+				bottom : outer.offset().top + outer.height(),
+				left   : outer.offset().left,
+				right  : outer.offset().left + outer.width()
 			}
 		} );
 		this.ui.outer.on( 'scroll', function() {

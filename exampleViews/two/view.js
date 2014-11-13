@@ -5,25 +5,22 @@ var template = require( './template.tpl' );
 var Popup = require( './popup/view' );
 
 module.exports = Super.extend( {
+	template : template,
 	initialize: function() {
 		this.render();
 	},
-	render: function(){
-		this.$el.html( template() );
-		this.resolveHandles(); 
-	},
 	ui : {
-    "trigger" : ".trigger!",
-    "popup"		: ".popup!"
-  },
+		"clickBtn" : ".trigger!",
+		"popup"		: ".popup!"
+	},
 	events: {
-		'click trigger' : 'exampleTwoTrigger'
+		'click clickBtn' : 'exampleTwoTrigger'
 	},
 	exampleTwoView: null,
 	exampleTwoTrigger: function(){
 		if (!this.exampleTwoView) this.exampleTwoView = new Popup( { el: this.ui.popup } );
 		ModuiPopup.open( {
-			target : this.ui.trigger,
+			target : this.ui.clickBtn,
 			position : 'right center',
 			contents : this.exampleTwoView
 		} );

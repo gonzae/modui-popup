@@ -1,0 +1,26 @@
+
+.example4 {
+	.outer {
+		position: relative;
+		display: inline-block;
+		overflow: scroll;
+		width: 350px;
+		height: 185px;
+		border: 1px solid #AAA;
+	}
+
+	.inner {
+		display: inline-block;
+		width: 600px;
+		height: 250px;
+	}
+
+	.trigger {
+		display: inline-block;
+		border: 0;
+		margin: 100px 250px;
+		width: 100px;
+		height: 100px;
+		cursor: pointer;
+	}
+}

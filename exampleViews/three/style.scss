@@ -1,0 +1,36 @@
+.example3 {
+	.table{
+		width: 100%;
+		padding: 5px;
+		background: #71A2E4;
+		border-radius: 5px;
+	}
+
+	.table tr{
+		height: 30px;
+	}
+
+	.table td{
+		width: 30%;
+	}
+
+	.table__top{
+		vertical-align: top;
+	}
+
+	.table__bottom{
+		vertical-align: bottom;
+	}
+
+	.table__right{
+		text-align: right;
+	}
+
+	.table__center{
+		text-align: center;
+	}
+
+	.table__left{
+		text-align: left;
+	}
+}

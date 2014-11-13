@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "modui popup demo",
   "main": "moduiPopupDemo.js",
-  "style": "*.scss",
+  "style": [ "*.scss", "lib/blackboard.css", "exampleViews/**/*.scss" ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,9 +16,9 @@
     "bb-collection-view": "^0.11.4",
     "jquery": "^2.1.1",
     "modui-base": "^0.1.5",
-    "modui-example-page": "0.0.0",
-    "modui-popup": "0.0.2",
-    "node-underscorify": "0.0.12",
+    "modui-example-page": "^0.0.0",
+    "modui-popup": "^0.0.3",
+    "node-underscorify": "^0.0.12",
     "sass-css-stream": "^0.1.1",
     "underscore": "^1.6.0",
     "underscorify": "^1.0.0"
