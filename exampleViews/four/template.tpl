@@ -17,15 +17,15 @@ var popup = ModuiPopup.open( {
   contents : 'Dance!',
   closeOnOutsideClick : false,
   keepWithinRect : {
-    top    : outer.offset().top,
+    top : outer.offset().top,
     bottom : outer.offset().top + outer.height(),
-    left   : outer.offset().left,
-    right  : outer.offset().left + outer.width()
+    left : outer.offset().left,
+    right : outer.offset().left + outer.width()
   }
 } );
 
 this.ui.outer.on( 'scroll', function() {
-	popup.reposition();
+  popup.reposition();
 } );</code></pre>
 	</div>
 </div>
