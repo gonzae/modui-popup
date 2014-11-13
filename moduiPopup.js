@@ -18,17 +18,16 @@ var kFadeTime = 70;
 module.exports = Super.extend( {
 	options : [
 		'target!',
-		'contents',
-		{ distanceAway : 2 },
+		'contents!',
 		{ position : 'bottom center' },
-		{ pointerPosition : 'bottom center' },
+		{ distanceAway : 2 },
+		{ pointerOffset : 0 },
 		{ keepWithinRect : function(){ return {
 			top : $( window ).scrollTop(),
 			bottom : $( window ).scrollTop() + $( window ).height(),
 			left   : 0,
 			right  : $( window ).width()
 		}; } },
-		{ pointerOffset : 0 },
 		{ closeOnOutsideClick : true },
 		'onClose',
 		'signature'
