@@ -1,4 +1,4 @@
-<div class="demo-container example3">
+<div class="demo-container example-positioning">
 	<p>
 		Position to taste.
 	</p>

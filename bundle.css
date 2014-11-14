@@ -325,7 +325,7 @@ input {
 .code-wrapper {
   float: left; }
 
-.example3 .table, .example4 .trigger, .big-button {
+.example-positioning .table, .example4 .trigger, .big-button {
   background-color: #71A2E4;
   border: thin solid #193441;
   color: #FCFFF5;
@@ -417,22 +417,22 @@ pre .variable.global, pre .variable.class, pre .variable.instance {
   width: 100px;
   height: 100px;
   cursor: pointer; }
-.example3 .table {
+.example-positioning .table {
   width: 100%;
   padding: 5px;
   background: #71A2E4;
   border-radius: 5px; }
-.example3 .table tr {
+.example-positioning .table tr {
   height: 30px; }
-.example3 .table td {
+.example-positioning .table td {
   width: 30%; }
-.example3 .table__top {
+.example-positioning .table__top {
   vertical-align: top; }
-.example3 .table__bottom {
+.example-positioning .table__bottom {
   vertical-align: bottom; }
-.example3 .table__right {
+.example-positioning .table__right {
   text-align: right; }
-.example3 .table__center {
+.example-positioning .table__center {
   text-align: center; }
-.example3 .table__left {
+.example-positioning .table__left {
   text-align: left; }

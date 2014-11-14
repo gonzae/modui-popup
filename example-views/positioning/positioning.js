@@ -15,7 +15,6 @@ module.exports = Super.extend( {
 	events: {
 		'click trigger' : 'exampleThreeTrigger'
 	},
-	example3Contents: 'I\'m here!',
 	exampleThreeTrigger: function() {
 		ModuiPopup.open( {
 			target : this.ui.target,
