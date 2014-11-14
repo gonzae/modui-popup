@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "modui popup demo",
   "main": "moduiPopupDemo.js",
-  "style": [ "*.scss", "lib/blackboard.css", "exampleViews/**/*.scss" ],
+  "style": [ "*.scss", "lib/blackboard.css", "example-views/**/*.scss" ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

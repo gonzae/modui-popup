@@ -1,7 +1,7 @@
 var Super = require( 'modui-base' );
 var ModuiPopup = require( 'modui-popup' );
 
-var template = require( './template.tpl' );
+var template = require( './positioning.tpl' );
 
 module.exports = Super.extend( {
 	template : template,

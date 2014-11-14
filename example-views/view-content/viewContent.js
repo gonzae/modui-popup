@@ -1,8 +1,8 @@
 var Super = require( 'modui-base' );
 var ModuiPopup = require( 'modui-popup' );
 
-var template = require( './template.tpl' );
-var Popup = require( './popup/view' );
+var template = require( './viewContent.tpl' );
+var Popup = require( './popup/viewContentPopup' );
 
 module.exports = Super.extend( {
 	template : template,

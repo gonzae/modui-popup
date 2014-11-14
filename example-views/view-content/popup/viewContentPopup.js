@@ -3,7 +3,7 @@ var Backbone = require( 'backbone' );
 var Super = require( 'modui-base' );
 var ModuiPopup = require( 'modui-popup' );
 
-var template = require( './template.tpl' );
+var template = require( './viewContentPopup.tpl' );
 
 var ExampleTwoModel = Backbone.Model.extend( {} );
 var exampleTwoModel = new ExampleTwoModel( { text: 'This is a view' } );

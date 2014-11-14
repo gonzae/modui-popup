@@ -3,10 +3,10 @@ var Backbone = require( 'backbone' );
 var $ = require( 'jquery' );
 var rainbow = require( './lib/rainbow' );
 
-var ExampleOneView = require( './exampleViews/one/view' );
-var ExampleTwoView = require( './exampleViews/two/view' );
-var ExampleThreeView = require( './exampleViews/three/view' );
-var ExampleFourView = require( './exampleViews/four/view' );
+var TextContentExampleView = require( './example-views/text-content/textContent' );
+var ViewContentExampleView = require( './example-views/view-content/viewContent' );
+var PositioningExampleView = require( './example-views/positioning/positioning' );
+var KeepWithinRectExampleView = require( './example-views/keep-within-rect/keepWithinRect' );
 
 var examplePage = new ModuiExamplePage( {
   title : 'modui-popup',
@@ -14,10 +14,10 @@ var examplePage = new ModuiExamplePage( {
   packageUrl : 'https://github.com/rotundasoftware/modui-popup',
   repositoryUrl : 'https://github.com/rotundasoftware/modui-popup',
   examples : [
-    { title : 'Text content', view : new ExampleOneView() },
-    { title : 'View content', view : new ExampleTwoView() },
-    { title : 'Positioning', view : new ExampleThreeView() },
-    { title : 'Keep within rect', view : new ExampleFourView() }
+    { title : 'Text content', view : new TextContentExampleView() },
+    { title : 'View content', view : new ViewContentExampleView() },
+    { title : 'Positioning', view : new PositioningExampleView() },
+    { title : 'Keep within rect', view : new KeepWithinRectExampleView() }
   ]
 } );
 
