@@ -4,12 +4,11 @@ var Backbone = require( 'backbone' );
 var _ = require( 'underscore' );
 var $ = require( 'jquery' );
 
-require( './lib/ui/jquery-plugins/outside-events' );
-
 var lastPossibleViewElement = $( 'body' )[ 0 ];
-var openPopups = [];
+var mOpenPopups = [];
 
 var kState_Closed = 'closed';
+var kState_Opening = 'opening';
 var kState_Open = 'open';
 var kState_Closing = 'closing';
 
@@ -18,11 +17,11 @@ var kFadeTime = 70;
 module.exports = Super.extend( {
 	options : [
 		'target!',
-		'contents!',
+		'contents',
 		{ position : 'bottom center' },
 		{ distanceAway : 2 },
 		{ pointerOffset : 0 },
-		{ keepWithinRect : function(){ return {
+		{ keepWithinRect : function() { return {
 			top : $( window ).scrollTop(),
 			bottom : $( window ).scrollTop() + $( window ).height(),
 			left   : 0,
@@ -44,34 +43,33 @@ module.exports = Super.extend( {
 
 		this._setState( kState_Closed );
 
-		if (this.$el.zIndex) { this.$el.zIndex( this.targetEl.zIndex() + 1 ); }
- 
+		if( this.$el.zIndex ) { this.$el.zIndex( this.targetEl.zIndex() + 1 ); }
 
-		if( this.closeOnOutsideClick ) {
-			setTimeout( function() {
-				// in case this popup is triggered by a click, we need to wait
-				// until the next event loop before we bind the outside click
-				// event to closing the popup. otherwise would close right away
-				_this.$el.bind( 'clickoutside', function( e ) {
-					// we do not close the popup if the clicked element is within the original
-					// target element that this popup is pointing at (or IS that element)
-					if( e.target !== _this.targetEl.get( 0 ) && ! $.contains( _this.targetEl.get( 0 ), e.target ) ) {
-						_this.close();
-					}
-				} );
-			} );
-		}
+		// if( this.closeOnOutsideClick ) {
+		// 	setTimeout( function() {
+		// 		// in case this popup is triggered by a click, we need to wait
+		// 		// until the next event loop before we bind the outside click
+		// 		// event to closing the popup. otherwise would close right away
+		// 		_this.$el.bind( 'clickoutside', function( e ) {
+		// 			// we do not close the popup if the clicked element is within the original
+		// 			// target element that this popup is pointing at (or IS that element)
+		// 			if( e.target !== _this.targetEl.get( 0 ) && ! $.contains( _this.targetEl.get( 0 ), e.target ) ) {
+		// 				_this.close();
+		// 			}
+		// 		} );
+		// 	} );
+		// }
 	},
 
 	render : function() {
 		if( _.isString( this.contents ) ) {
 			this.$el.html( '<div class="html-contents">' + this.contents + '</div>' );
-		} else if( this.contents instanceof Backbone.View ) {
+		} else if( _.isObject( this.contents ) && _.isFunction( this.contents.render ) ) {
 			this.$el.html( '' );
 			this.$el.append( this.contents.$el );
 			this.contents.render();
-		}
-		else {
+			this.contents.delegateEvents();
+		} else {
 			// if we don't have any contents specified, assume that this is
 			// a derived class that defines its own contents with its own render.
 			Super.prototype.render.apply( this, arguments );
@@ -89,7 +87,7 @@ module.exports = Super.extend( {
 		setTimeout( function() {
 			if( _this.state === kState_Closing ) {
 				_this.remove();
-				openPopups = _.without( openPopups, _this );
+				mOpenPopups = _.without( mOpenPopups, _this );
 				if( _this.onClose ) _this.onClose();
 			}
 
@@ -105,7 +103,6 @@ module.exports = Super.extend( {
 		var popupHeight = Math.round( this.$el.outerHeight() );
 		var kPointerHeight = 10;
 
-		//var offsetParent = $( 'html' ).get(0) !== this.targetEl.offsetParent().get( 0 ) ? this.targetEl.offsetParent() : $( window );
 		var offsetParent = $( window );
 		var parentWidth = Math.round( offsetParent.outerWidth() );
 		var parentHeight = Math.round( offsetParent.outerHeight() );
@@ -204,9 +201,7 @@ module.exports = Super.extend( {
 				// original 'preferred' position, then, shit, all positions were out of bounds.
 				allPositionsAreOutOfBounds = currentPositionBeingTried === this.position;
 				if( allPositionsAreOutOfBounds ) done = true;
-			}
-			else done = true;
-
+			} else done = true;
 		} while( ! done );
 
 		return ! allPositionsAreOutOfBounds;
@@ -248,7 +243,7 @@ module.exports = Super.extend( {
 		var curElement = this.targetEl;
 		while( curElement.length > 0 && curElement[0] !== lastPossibleViewElement ) {
 			var view = curElement.data( 'view' );
-			if( view && view instanceof Backbone.View ) {
+			if( view && _.isFunction( view.render ) ) {
 				parent = view;
 				break;
 			}
@@ -267,7 +262,7 @@ module.exports = Super.extend( {
 	_setupTargetEl : function() {
 		var _this = this;
 
-		this.targetEl = this.target instanceof Backbone.View ? this.target.$el : this.target;
+		this.targetEl = _.isObject( this.target ) && _.isFunction( this.target.render ) ? this.target.$el : this.target;
 
 		this.targetEl.on( 'remove', function() {
 			_this.close();
@@ -278,7 +273,7 @@ module.exports = Super.extend( {
 		var popupInstance;
 
 		if( options.signature ) {
-			var existingPopupsOfThisSignature = _.filter( openPopups, function( thisPopup ) {
+			var existingPopupsOfThisSignature = _.filter( mOpenPopups, function( thisPopup ) {
 				return thisPopup.signature === options.signature && thisPopup.state === kState_Open;
 			} );
 
@@ -298,20 +293,36 @@ module.exports = Super.extend( {
 			popupInstance = new this( options );
 
 			$( 'body' ).append( popupInstance.$el );
+
 			popupInstance.render();
 			popupInstance.reposition();
-			openPopups.push( popupInstance );
+			mOpenPopups.push( popupInstance );
 		}
 
-		popupInstance._setState( kState_Open );
+		popupInstance._setState( kState_Opening );
+
+		setTimeout( function() {
+			popupInstance._setState( kState_Open );
+		} );
 
 		return popupInstance;
 	}
 } );
 
-$( window ).resize(function() {
-	_.each( openPopups, function( thisPopup ) {
+$( window ).resize( function() {
+	_.each( mOpenPopups, function( thisPopup ) {
 		thisPopup.reposition();
+	} );
+} );
+
+$( document ).bind( 'mousedown', function( e ) {
+	_.each( mOpenPopups, function( thisPopup ) {
+		if( thisPopup.closeOnOutsideClick && thisPopup.state === kState_Open ) {
+			var thisPopupEl = thisPopup.$el.get( 0 );
+			if( thisPopupEl !== e.target && ! $.contains( thisPopupEl, e.target ) ) {
+				thisPopup.close();
+			}
+		}
 	} );
 } );
 
