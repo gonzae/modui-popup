@@ -8,11 +8,10 @@ var lastPossibleViewElement = $( 'body' )[ 0 ];
 var mOpenPopups = [];
 
 var kState_Closed = 'closed';
-var kState_Opening = 'opening';
 var kState_Open = 'open';
 var kState_Closing = 'closing';
 
-var kFadeTime = 70;
+var kFadeTime = 100;
 
 module.exports = Super.extend( {
 	options : [
@@ -299,11 +298,7 @@ module.exports = Super.extend( {
 			mOpenPopups.push( popupInstance );
 		}
 
-		popupInstance._setState( kState_Opening );
-
-		setTimeout( function() {
-			popupInstance._setState( kState_Open );
-		} );
+		popupInstance._setState( kState_Open );
 
 		return popupInstance;
 	}
