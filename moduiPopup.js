@@ -2,20 +2,15 @@
 	// UMD wrapper
 	if ( typeof define === 'function' && define.amd ) {
 		// AMD
-		define( [ 'underscore', 'backbone', 'jquery' ], factory );
+		define( [ 'underscore', 'backbone', 'jquery', 'modui-base' ], factory );
 	} else if ( typeof exports !== 'undefined' ) {
 		// Node/CommonJS
-		module.exports = factory( require('underscore' ), require( 'backbone' ), require( 'backbone' ).$ );
+		module.exports = factory( require('underscore' ), require( 'backbone' ), require( 'jquery' ), require( 'modui-base' ) );
 	} else {
 		// Browser globals
-		factory( root._, root.Backbone, ( root.jQuery || root.Zepto || root.$ ) );
+		factory( root._, root.Backbone, ( root.jQuery || root.Zepto || root.$ ), root.ModuiBase );
 	}
-}( this, function( _, Backbone, $ ) {
-
-var Super = require( 'modui-base' );
-var Backbone = require( 'backbone' );
-var _ = require( 'underscore' );
-var $ = require( 'jquery' );
+}( this, function( _, Backbone, $, ModuiBase ) {
 
 var lastPossibleViewElement = $( 'body' )[ 0 ];
 var mOpenPopups = [];
@@ -26,8 +21,7 @@ var kState_Closing = 'closing';
 
 var kFadeTime = 100;
 
-//module.exports = Super.extend( {
-Backbone.ModuiPopup = Super.extend( {
+Backbone.ModuiPopup = ModuiBase.extend( {
 	options : [
 		'target!',
 		'contents',
@@ -275,7 +269,7 @@ Backbone.ModuiPopup = Super.extend( {
 	_setupTargetEl : function() {
 		var _this = this;
 
-		this.targetEl = _.isObject( this.target ) && _.isFunction( this.target.render ) ? this.target.$el : $( this.target );
+		this.targetEl = _.isObject( this.target ) && _.isFunction( this.target.render ) ? this.target.$el : this.target;
 
 		this.targetEl.on( 'remove', function() {
 			_this.close();
