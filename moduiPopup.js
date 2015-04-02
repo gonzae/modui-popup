@@ -5,7 +5,7 @@
 		define( [ 'underscore', 'backbone', 'jquery', 'modui-base' ], factory );
 	} else if ( typeof exports !== 'undefined' ) {
 		// Node/CommonJS
-		module.exports = factory( require('underscore' ), require( 'backbone' ), require( 'backbone' ).$, require( 'modui-base' ) );
+		module.exports = factory( require('underscore' ), require( 'backbone' ), require( 'jquery' ), require( 'modui-base' ) );
 	} else {
 		// Browser globals
 		factory( root._, root.Backbone, ( root.jQuery || root.Zepto || root.$ ), root.Backbone.ModuiBase );
