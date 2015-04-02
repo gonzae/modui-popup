@@ -1,8 +1,16 @@
-
-var Super = require( 'modui-base' );
-var Backbone = require( 'backbone' );
-var _ = require( 'underscore' );
-var $ = require( 'jquery' );
+( function( root, factory ) {
+	// UMD wrapper
+	if ( typeof define === 'function' && define.amd ) {
+		// AMD
+		define( [ 'underscore', 'backbone', 'jquery', 'modui-base' ], factory );
+	} else if ( typeof exports !== 'undefined' ) {
+		// Node/CommonJS
+		module.exports = factory( require('underscore' ), require( 'backbone' ), require( 'backbone' ).$, require( 'modui-base' ) );
+	} else {
+		// Browser globals
+		factory( root._, root.Backbone, ( root.jQuery || root.Zepto || root.$ ), root.Backbone.ModuiBase );
+	}
+}( this, function( _, Backbone, $, Super ) {
 
 var lastPossibleViewElement = $( 'body' )[ 0 ];
 var mOpenPopups = [];
@@ -13,7 +21,7 @@ var kState_Closing = 'closing';
 
 var kFadeTime = 100;
 
-module.exports = Super.extend( {
+Backbone.ModuiPopup = Super.extend( {
 	options : [
 		'target!',
 		'contents',
@@ -351,3 +359,8 @@ function _getNextPositionToTry( position ) {
 
 	return position;
 }
+
+// return UMD
+return Backbone.ModuiPopup;
+
+} ) );
