@@ -1,6 +1,6 @@
 # modui-popup
 
-A backbone.js based popup balloon.
+A backbone.js based popup balloon. Looks like this:
 
 ![](https://github.com/rotundasoftware/modui-popup/blob/master/popupShot.png)
 
@@ -11,6 +11,10 @@ __For demos see [the modui-popup home page](http://rotundasoftware.github.io/mod
 ```
 npm install modui-popup
 ```
+
+If you are not using CommonJS, just load moduiPopup.js, and [moduiBase.js](https://github.com/rotundasoftware/modui-base/blob/master/modui-base.js), and ModuiPopup will be exported to the `ModuiPopup` global. 
+
+Don't forget to include moduiPopup.css in your page.
 
 ## Usage
 
