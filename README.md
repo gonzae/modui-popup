@@ -1,6 +1,6 @@
 # modui-popup
 
-A popup balloon for the backbone.js-based modui suite.
+A backbone.js based popup balloon.
 
 __For demos see [the modui-popup home page](http://rotundasoftware.github.io/modui-popup/).__
 
