@@ -29,13 +29,12 @@ var ModuiPopup = require( 'modui-popup' );
 
 ModuiPopup.open( {
   target : $( '#example' ),
+  position : 'right center',
   contents : 'This is a popup balloon!'
 } );
 ```
 
 `contents` may either be a text/html string or a backbone view instance.
-
-If you are using [parcelify](https://github.com/rotundasoftware/parcelify) or [cartero](https://github.com/rotundasoftware/cartero), the modui-popup styles will automatically be included in your css output. Otherwise, you'll need to include `moduiPopup.css` in your project manually.
 
 ### ModuiPopup.open() options
 
