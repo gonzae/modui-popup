@@ -14,9 +14,9 @@ If you are using CommonJS,
 npm install modui-popup
 ```
 
-Or, if you are not using CommonJS, just load moduiPopup.js, and [moduiBase.js](https://github.com/rotundasoftware/modui-base/blob/master/modui-base.js), and ModuiPopup will be exported to the `ModuiPopup` global. 
-
 Check out [parcelify](https://github.com/rotundasoftware/parcelify) or [cartero](https://github.com/rotundasoftware/cartero) for css compilation, or just include moduiPopup.css in your page.
+
+Or, if you are not using CommonJS, just load moduiPopup.js, and [moduiBase.js](https://github.com/rotundasoftware/modui-base/blob/master/modui-base.js), and modui-popup will be exported to the `ModuiPopup` global. And don't forget to include include moduiPopup.css.
 
 ## Usage
 
