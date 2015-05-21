@@ -28,7 +28,7 @@ var ModuiPopup = require( 'modui-popup' );
 ModuiPopup.open( {
   target : $( '#example' ),
   position : 'right center',
-  contents : 'This is a popup balloon!'
+  contents : 'This is a popup balloon.'
 } );
 ```
 
