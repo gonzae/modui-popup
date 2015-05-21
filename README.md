@@ -8,13 +8,17 @@ __For demos see [the modui-popup home page](http://rotundasoftware.github.io/mod
 
 ## Installation
 
+If you are using CommonJS,
+
 ```
 npm install modui-popup
 ```
 
-If you are not using CommonJS, just load moduiPopup.js, and [moduiBase.js](https://github.com/rotundasoftware/modui-base/blob/master/modui-base.js), and ModuiPopup will be exported to the `ModuiPopup` global. 
+(Check out [parcelify](https://github.com/rotundasoftware/parcelify) or [cartero](https://github.com/rotundasoftware/cartero) for asset compilation.)
 
-Don't forget to include moduiPopup.css in your page.
+Or, if you are not using CommonJS, just load moduiPopup.js, and [moduiBase.js](https://github.com/rotundasoftware/modui-base/blob/master/modui-base.js), and ModuiPopup will be exported to the `ModuiPopup` global. 
+
+And don't forget to include moduiPopup.css in your page.
 
 ## Usage
 
