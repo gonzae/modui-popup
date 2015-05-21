@@ -2,6 +2,8 @@
 
 A backbone.js based popup balloon.
 
+![](https://github.com/rotundasoftware/modui-popup/blob/master/popupShot.jpg)
+
 __For demos see [the modui-popup home page](http://rotundasoftware.github.io/modui-popup/).__
 
 ## Installation
