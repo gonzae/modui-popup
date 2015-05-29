@@ -20,7 +20,7 @@
     "bb-collection-view": "^0.11.4",
     "jquery": "^2.1.1",
     "modui-base": "^0.1.5",
-    "modui-example-page": "^0.0.3",
+    "modui-example-page": "^0.0.4",
     "modui-popup": "^0.0.4",
     "node-underscorify": "^0.0.12",
     "parcelify": "^1.1.1",
