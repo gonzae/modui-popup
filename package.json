@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "description": "modui popup demo",
   "main": "moduiPopupDemo.js",
-  "style": [ "*.scss", "lib/blackboard.css", "example-views/**/*.scss" ],
+  "style": [
+    "*.scss",
+    "lib/blackboard.css",
+    "example-views/**/*.scss"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,6 +23,7 @@
     "modui-example-page": "^0.0.3",
     "modui-popup": "^0.0.4",
     "node-underscorify": "^0.0.12",
+    "parcelify": "^1.1.1",
     "sass-css-stream": "^0.1.1",
     "underscore": "^1.6.0",
     "underscorify": "^1.0.0"
@@ -26,9 +31,13 @@
   "author": "",
   "license": "ISC",
   "transforms": [
-    "sass-css-stream",
-    "node-underscorify"
+    "sass-css-stream"
   ],
+  "browserify": {
+    "transform": [
+      "node-underscorify"
+    ]
+  },
   "bugs": {
     "url": "https://github.com/rotundasoftware/modui-popup/issues"
   },
