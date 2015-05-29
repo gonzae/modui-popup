@@ -11,7 +11,7 @@ var KeepWithinRectExampleView = require( './example-views/keep-within-rect/keepW
 
 var examplePage = new ModuiExamplePage( {
   title : 'modui-popup',
-  description : 'A popup balloon for the backbone.js based modui suite. Demos courtesy of <a href="https://github.com/timothycommoner">Tim Commoner</a>.',
+  description : 'A popup balloon for the backbone.js based modui suite.',
   packageUrl : 'https://github.com/rotundasoftware/modui-popup',
   repositoryUrl : 'https://github.com/rotundasoftware/modui-popup',
   examples : [
