@@ -51,20 +51,20 @@ Backbone.ModuiPopup = Super.extend( {
 
 		if( this.$el.zIndex ) { this.$el.zIndex( this.targetEl.zIndex() + 1 ); }
 
-		// if( this.closeOnOutsideClick ) {
-		// 	setTimeout( function() {
-		// 		// in case this popup is triggered by a click, we need to wait
-		// 		// until the next event loop before we bind the outside click
-		// 		// event to closing the popup. otherwise would close right away
-		// 		_this.$el.bind( 'clickoutside', function( e ) {
-		// 			// we do not close the popup if the clicked element is within the original
-		// 			// target element that this popup is pointing at (or IS that element)
-		// 			if( e.target !== _this.targetEl.get( 0 ) && ! $.contains( _this.targetEl.get( 0 ), e.target ) ) {
-		// 				_this.close();
-		// 			}
-		// 		} );
-		// 	} );
-		// }
+		if( this.closeOnOutsideClick ) {
+			setTimeout( function() {
+				// in case this popup is triggered by a click, we need to wait
+				// until the next event loop before we bind the outside click
+				// event to closing the popup. otherwise would close right away
+				_this.$el.bind( 'clickoutside', function( e ) {
+					// we do not close the popup if the clicked element is within the original
+					// target element that this popup is pointing at (or IS that element)
+					if( e.target !== _this.targetEl.get( 0 ) && ! $.contains( _this.targetEl.get( 0 ), e.target ) ) {
+						_this.close();
+					}
+				} );
+			} );
+		}
 	},
 
 	render : function() {
@@ -96,7 +96,7 @@ Backbone.ModuiPopup = Super.extend( {
 			if( _this.state === kState_Closing ) {
 				_this.remove();
 				mOpenPopups = _.without( mOpenPopups, _this );
-				this.spawn( 'closed' );
+				_this.spawn( 'closed' );
 			}
 
 			if( callback ) callback();

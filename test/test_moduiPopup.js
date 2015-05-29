@@ -10,7 +10,7 @@ var Backbone = require( 'backbone' );
 
 Backbone.$ = $;
 
-var kFadeTime = 70; // keep in sync with kFadeTime in main file
+var kFadeTime = 100; // keep in sync with kFadeTime in main file
 
 describe( 'modui-popup', function() {
 	var targetEl;
