@@ -35,7 +35,6 @@ Backbone.ModuiPopup = Super.extend( {
 			right  : $( window ).width()
 		}; } },
 		{ closeOnOutsideClick : true },
-		'onClose',
 		'signature'
 	],
 
@@ -91,11 +90,13 @@ Backbone.ModuiPopup = Super.extend( {
 		this.$el.unbind( 'clickoutside' );
 		this._setState( kState_Closing );
 
+		this.spawn( 'closing' );
+
 		setTimeout( function() {
 			if( _this.state === kState_Closing ) {
 				_this.remove();
 				mOpenPopups = _.without( mOpenPopups, _this );
-				if( _this.onClose ) _this.onClose();
+				this.spawn( 'closed' );
 			}
 
 			if( callback ) callback();
