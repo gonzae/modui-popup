@@ -49,8 +49,6 @@ Backbone.ModuiPopup = Super.extend( {
 
 		this._setState( kState_Closed );
 
-		if( this.$el.zIndex ) { this.$el.zIndex( this.targetEl.zIndex() + 1 ); }
-
 		if( this.closeOnOutsideClick ) {
 			setTimeout( function() {
 				// in case this popup is triggered by a click, we need to wait
@@ -80,6 +78,10 @@ Backbone.ModuiPopup = Super.extend( {
 			// a derived class that defines its own contents with its own render.
 			Super.prototype.render.apply( this, arguments );
 		}
+
+		// if no z-index is supplied, try to set our z-index to a reasonable value
+		// (one greater than the target element), being mindful over browser support.
+		if( this.$el.css( 'z-index' ) === '' && this.targetEl.zIndex ) { this.$el.css( 'z-index', this.targetEl.zIndex() + 1 ); }
 	},
 
 	close : function( callback ) {
