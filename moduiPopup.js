@@ -356,7 +356,7 @@ function _getNextPositionToTry( position ) {
 			position = 'left center';
 			break;
 		case 'left center':
-			position = 'top center';
+			position = 'top left';
 			break;
 	}
 
