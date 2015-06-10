@@ -125,6 +125,7 @@ Backbone.ModuiPopup = Super.extend( {
 		var cssPositionProps;
 
 		var currentPositionBeingTried = this.position;
+		var havedTriedOtherPositions = false;
 		var allPositionsAreOutOfBounds = false;
 		var done = false;
 
@@ -204,13 +205,18 @@ Backbone.ModuiPopup = Super.extend( {
 			;
 
 			if( this._isOutsideOfBoundingRect() ) {
-				// Popup is outside bounding rect. try a new position.
-				currentPositionBeingTried = _getNextPositionToTry( currentPositionBeingTried );
+				if( currentPositionBeingTried === this.position && havedTriedOtherPositions ) {
+					// if we have tried all the different positions and are now are back at our
+					// original 'preferred' position, then, shit, all positions were out of bounds.\
+					// just leave the popup in its default position, eventhough it is also out of bounds.
 
-				// if we have tried all the different positions and are now are back at our
-				// original 'preferred' position, then, shit, all positions were out of bounds.
-				allPositionsAreOutOfBounds = currentPositionBeingTried === this.position;
-				if( allPositionsAreOutOfBounds ) done = true;
+					allPositionsAreOutOfBounds = true;
+					done = true;
+				} else {
+					// Popup is outside bounding rect. try a new position.
+					havedTriedOtherPositions = true;
+					currentPositionBeingTried = _getNextPositionToTry( currentPositionBeingTried );
+				}
 			} else done = true;
 		} while( ! done );
 
