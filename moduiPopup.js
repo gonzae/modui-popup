@@ -109,7 +109,7 @@ Backbone.ModuiPopup = Super.extend( {
 		var targetWidth = Math.round( this.targetEl.outerWidth() );
 		var targetHeight = Math.round( this.targetEl.outerHeight() );
 
-		var popupWidth  = Math.round( this.$el.width() );
+		var popupWidth  = Math.round( this.$el.outerWidth() );
 		var popupHeight = Math.round( this.$el.outerHeight() );
 		var kPointerHeight = 10;
 

@@ -9,7 +9,6 @@ div.modui-popup {
 	right: 0px;
 	z-index: 2000;
 	background-color: #FFFFFF;
-	font-family: 'Open sans', 'Arial';
 	font-size: 13px;
 	border-radius: 5px;
 	box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.35);
@@ -113,7 +112,8 @@ div.modui-popup {
 	}
 
 	&.center {
-		margin-left: -$pointerHeight;
+		// why were we doing this ? this was just messing things up
+		// margin-left: -$pointerHeight;
 	}
 
 	/*--- Below ---*/
