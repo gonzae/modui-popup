@@ -35,7 +35,8 @@ Backbone.ModuiPopup = Super.extend( {
 			right  : $( window ).width()
 		}; } },
 		{ closeOnOutsideClick : true },
-		'signature'
+		'signature',
+		'zIndex'
 	],
 
 	passMessages : { '*' : '.' }, // pass all courier messages directly through to parent view
@@ -80,8 +81,9 @@ Backbone.ModuiPopup = Super.extend( {
 		}
 
 		// if no z-index is supplied, try to set our z-index to a reasonable value
-		// (one greater than the target element), being mindful over browser support.
-		if( this.$el.css( 'z-index' ) === '' && this.targetEl.zIndex ) { this.$el.css( 'z-index', this.targetEl.zIndex() + 1 ); }
+		// (one greater than the target element), being mindful of browser support.
+		if( this.zIndex ) this.$el.css( 'z-index', this.zIndex );
+		else if( this.$el.css( 'z-index' ) === '' && this.targetEl.zIndex ) { this.$el.css( 'z-index', this.targetEl.zIndex() + 1 ); }
 	},
 
 	close : function( callback ) {
