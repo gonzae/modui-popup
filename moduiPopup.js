@@ -35,6 +35,7 @@ Backbone.ModuiPopup = Super.extend( {
 			right  : $( window ).width()
 		}; } },
 		{ closeOnOutsideClick : true },
+		'onClose',
 		'signature',
 		'zIndex'
 	],
@@ -80,13 +81,14 @@ Backbone.ModuiPopup = Super.extend( {
 			Super.prototype.render.apply( this, arguments );
 		}
 
-		// if no z-index is supplied, try to set our z-index to a reasonable value
-		// (one greater than the target element), being mindful of browser support.
 		if( this.zIndex ) this.$el.css( 'z-index', this.zIndex );
-		else if( this.$el.css( 'z-index' ) === '' && this.targetEl.zIndex ) { this.$el.css( 'z-index', this.targetEl.zIndex() + 1 ); }
+
+		// if no z-index is supplied, try to set our z-index to a reasonable value
+		// (one greater than the target element), being mindful over browser support.
+		if( this.$el.css( 'z-index' ) === '' && this.targetEl.zIndex ) { this.$el.css( 'z-index', this.targetEl.zIndex() + 1 ); }
 	},
 
-	close : function( callback ) {
+	close : function() {
 		var _this = this;
 
 		if( this.state !== kState_Open ) return;
@@ -102,9 +104,9 @@ Backbone.ModuiPopup = Super.extend( {
 				mOpenPopups = _.without( mOpenPopups, _this );
 				_this.spawn( 'closed' );
 			}
-
-			if( callback ) callback();
 		}, kFadeTime );
+
+		if( _.isFunction( this.onClose ) ) this.onClose.apply( this, arguments );
 	},
 
 	reposition : function() {
