@@ -336,6 +336,12 @@ $( window ).resize( function() {
 	} );
 } );
 
+$( window ).scroll( function() {
+	_.each( mOpenPopups, function( thisPopup ) {
+		if( _elementPositionIsFixed( thisPopup.targetEl ) ) thisPopup.reposition();
+	} );
+} );
+
 $( document ).bind( 'mousedown', function( e ) {
 	_.each( mOpenPopups, function( thisPopup ) {
 		if( thisPopup.closeOnOutsideClick && thisPopup.state === kState_Open ) {
@@ -346,6 +352,12 @@ $( document ).bind( 'mousedown', function( e ) {
 		}
 	} );
 } );
+
+function _elementPositionIsFixed( ele ) {
+	if( ele.prop( 'tagName' ) === 'HTML' ) return false;
+
+	return ( ele.css( 'position' ) !== 'fixed' ) ? _elementPositionIsFixed( ele.offsetParent() ) : true;
+};
 
 function _getNextPositionToTry( position ) {
 	switch( position ) {
