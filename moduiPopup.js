@@ -336,6 +336,14 @@ $( window ).resize( function() {
 	} );
 } );
 
+$( window ).scroll( function() {
+	_.each( mOpenPopups, function( thisPopup ) {
+		if( thisPopup.targetEl.css( 'position' ) === 'fixed' || _hasFixedParent( thisPopup.targetEl ) ) {
+			thisPopup.reposition();
+		}
+	} );
+} );
+
 $( document ).bind( 'mousedown', function( e ) {
 	_.each( mOpenPopups, function( thisPopup ) {
 		if( thisPopup.closeOnOutsideClick && thisPopup.state === kState_Open ) {
@@ -346,6 +354,16 @@ $( document ).bind( 'mousedown', function( e ) {
 		}
 	} );
 } );
+
+function _hasFixedParent( ele ) {
+	var eleCheck = ele.offsetParent();
+	var returnVal;
+
+	if( eleCheck.prop( 'tagName' ) === 'HTML' ) {
+		return false;
+	}
+	return ( eleCheck.css( 'position' ) !== 'fixed' ) ? _hasFixedParent( eleCheck ) : true;
+};
 
 function _getNextPositionToTry( position ) {
 	switch( position ) {
