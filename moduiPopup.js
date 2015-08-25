@@ -82,10 +82,15 @@ Backbone.ModuiPopup = Super.extend( {
 		}
 
 		if( this.zIndex ) this.$el.css( 'z-index', this.zIndex );
+		else if( this.targetEl.zIndex ) {
+			// if no explicit z-index is supplied, make sure we are in front of
+			// our target (being mindful over browser support).
 
-		// if no z-index is supplied, try to set our z-index to a reasonable value
-		// (one greater than the target element), being mindful over browser support.
-		if( this.$el.css( 'z-index' ) === '' && this.targetEl.zIndex ) { this.$el.css( 'z-index', this.targetEl.zIndex() + 1 ); }
+			var popupZIndex = parseInt( this.$el.css( 'z-index' ), 10 );
+			if( _.isNaN( popupZIndex ) || popupZIndex <= this.targetEl.zIndex() ) {
+				this.$el.css( 'z-index', this.targetEl.zIndex() + 1 );
+			}
+		}
 	},
 
 	close : function() {
