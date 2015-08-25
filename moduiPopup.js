@@ -338,9 +338,7 @@ $( window ).resize( function() {
 
 $( window ).scroll( function() {
 	_.each( mOpenPopups, function( thisPopup ) {
-		if( thisPopup.targetEl.css( 'position' ) === 'fixed' || _hasFixedParent( thisPopup.targetEl ) ) {
-			thisPopup.reposition();
-		}
+		if( _elementPositionIsFixed( thisPopup.targetEl ) ) thisPopup.reposition();
 	} );
 } );
 
@@ -355,14 +353,10 @@ $( document ).bind( 'mousedown', function( e ) {
 	} );
 } );
 
-function _hasFixedParent( ele ) {
-	var eleCheck = ele.offsetParent();
-	var returnVal;
+function _elementPositionIsFixed( ele ) {
+	if( ele.prop( 'tagName' ) === 'HTML' ) return false;
 
-	if( eleCheck.prop( 'tagName' ) === 'HTML' ) {
-		return false;
-	}
-	return ( eleCheck.css( 'position' ) !== 'fixed' ) ? _hasFixedParent( eleCheck ) : true;
+	return ( ele.css( 'position' ) !== 'fixed' ) ? _elementPositionIsFixed( ele.offsetParent() ) : true;
 };
 
 function _getNextPositionToTry( position ) {
