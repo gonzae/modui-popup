@@ -21,6 +21,8 @@ var kState_Closing = 'closing';
 
 var kFadeTime = 100;
 
+var mWindowEventListenersAttached = false;
+
 Backbone.ModuiPopup = Super.extend( {
 	options : [
 		'target!',
@@ -64,6 +66,11 @@ Backbone.ModuiPopup = Super.extend( {
 					}
 				} );
 			} );
+		}
+
+		if( ! mWindowEventListenersAttached ) {
+			_attachWindowEventListeners();
+			mWindowEventListenersAttached = true;
 		}
 	},
 
@@ -330,17 +337,6 @@ Backbone.ModuiPopup = Super.extend( {
 	}
 } );
 
-$( window ).resize( function() {
-	_.each( mOpenPopups, function( thisPopup ) {
-		thisPopup.reposition();
-	} );
-} );
-
-$( window ).scroll( function() {
-	_.each( mOpenPopups, function( thisPopup ) {
-		if( _elementPositionIsFixed( thisPopup.targetEl ) ) thisPopup.reposition();
-	} );
-} );
 
 $( document ).bind( 'mousedown', function( e ) {
 	_.each( mOpenPopups, function( thisPopup ) {
@@ -352,6 +348,24 @@ $( document ).bind( 'mousedown', function( e ) {
 		}
 	} );
 } );
+
+function _attachWindowEventListeners() {
+	$( window ).scroll( function() {
+		_.each( mOpenPopups, function( thisPopup ) {
+			if( _elementPositionIsFixed( thisPopup.targetEl ) || thisPopup.hasElementFixedChanges ) {
+				thisPopup.reposition();
+				thisPopup.hasElementFixedChanges = true;
+			}
+		} );
+	} );
+
+	$( window ).resize( function() {
+		_.each( mOpenPopups, function( thisPopup ) {
+			thisPopup.reposition();
+		} );
+	} );
+
+};
 
 function _elementPositionIsFixed( ele ) {
 	if( ele.prop( 'tagName' ) === 'HTML' ) return false;
