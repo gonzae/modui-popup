@@ -21,6 +21,8 @@ var kState_Closing = 'closing';
 
 var kFadeTime = 100;
 
+var scrollEventListenerAttached = false;
+
 Backbone.ModuiPopup = Super.extend( {
 	options : [
 		'target!',
@@ -64,6 +66,11 @@ Backbone.ModuiPopup = Super.extend( {
 					}
 				} );
 			} );
+		}
+
+		if( ! scrollEventListenerAttached ) {
+			_attachScrollListener();
+			scrollEventListenerAttached = true;
 		}
 	},
 
@@ -352,6 +359,17 @@ $( document ).bind( 'mousedown', function( e ) {
 		}
 	} );
 } );
+
+function _attachScrollListener() {
+	$( window ).scroll( function() {
+		_.each( mOpenPopups, function( thisPopup ) {
+			if( _elementPositionIsFixed( thisPopup.targetEl ) || thisPopup.hasElementFixedChanges ) {
+				thisPopup.reposition();
+				thisPopup.hasElementFixedChanges = true;
+			}
+		} );
+	} );
+};
 
 function _elementPositionIsFixed( ele ) {
 	if( ele.prop( 'tagName' ) === 'HTML' ) return false;
