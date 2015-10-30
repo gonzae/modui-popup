@@ -48,16 +48,18 @@ The `ModuiPopup.open()` method may be passed an options argument with the follow
 
 #### `position`
 
-(default: 'bottom center') Determines the position of the popup relative to its target. Valid positions are:
+(default: 'bottom center') A string that determines the preferred position of the popup relative to its target. Valid positions are:
 
-* top left
-* top center
-* top right
-* left center
-* right center
-* bottom left
-* bottom center
-* bottom right
+'bottom center'
+'top center'
+'right center'
+'left center'
+'top left'
+'bottom left'
+'top right'
+'bottom right'
+
+If the preferred position supplied causes the popup to extend outside of `keepWithinRect`, then the remaining positions are tried in the order above until one is found that does not cause the popup to extend outside of `keepWithinRect`. The `position` option may also be an array of preferred position strings, in which each each position in the array is tried (in the order supplied) before the remaining positions are tried.
 
 See [the demo page](http://rotundasoftware.github.io/modui-popup/) for an interactive example.
 

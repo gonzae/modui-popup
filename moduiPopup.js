@@ -20,6 +20,18 @@ var kState_Open = 'open';
 var kState_Closing = 'closing';
 
 var kFadeTime = 100;
+var kMinTimeAfterOpenBeforeCloseOnOutsideClick = 100;
+
+var kPositions = [
+	'bottom center',
+	'top center',
+	'right center',
+	'left center',
+	'top left',
+	'bottom left',
+	'top right',
+	'bottom right'
+];
 
 var mWindowEventListenersAttached = false;
 
@@ -120,14 +132,22 @@ Backbone.ModuiPopup = Super.extend( {
 
 		if( _.isFunction( this.onClose ) ) this.onClose.apply( this, arguments );
 	},
+ 
+	reposition : function( allowedPositions, tryAgainIfDimentionsChange ) {
+		if( _.isUndefined( allowedPositions ) ) {
+			allowedPositions = _.isArray( this.position ) ? _.clone( this.position ) : [ this.position ];
+			allowedPositions = _.union( allowedPositions, kPositions );
+		}
 
-	reposition : function() {
+		if( _.isUndefined( tryAgainIfDimentionsChange ) ) tryAgainIfDimentionsChange = true;
+
 		var targetWidth = Math.round( this.targetEl.outerWidth() );
 		var targetHeight = Math.round( this.targetEl.outerHeight() );
 
 		var popupWidth  = Math.round( this.$el.outerWidth() );
 		var popupHeight = Math.round( this.$el.outerHeight() );
 		var kPointerHeight = 10;
+		var kPopupMargin = 10;
 
 		var offsetParent = $( window );
 		var parentWidth = Math.round( offsetParent.outerWidth() );
@@ -140,7 +160,7 @@ Backbone.ModuiPopup = Super.extend( {
 
 		var cssPositionProps;
 
-		var currentPositionBeingTried = this.position;
+		var currentPositionBeingTried = _.first( allowedPositions );
 		var havedTriedOtherPositions = false;
 		var allPositionsAreOutOfBounds = false;
 		var done = false;
@@ -151,7 +171,7 @@ Backbone.ModuiPopup = Super.extend( {
 					cssPositionProps = {
 						bottom : 'auto',
 						left : targetOffset.left + pointerOffset,
-						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
 						right : 'auto'
 					};
 					break;
@@ -159,30 +179,30 @@ Backbone.ModuiPopup = Super.extend( {
 					cssPositionProps = {
 						bottom : 'auto',
 						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
-						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
 						right : 'auto'
 					};
 					break;
 				case 'top right':
 					cssPositionProps = {
-						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
 						bottom : 'auto',
-						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset,
+						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset, // might need to subtract kPopupMargin here
 						left : 'auto'
 					};
 					break;
 				case 'left center':
 					cssPositionProps = {
-						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ),
-						right : parentWidth - targetOffset.left + distanceAway,
+						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - kPopupMargin,
+						right : parentWidth - targetOffset.left + distanceAway, // might need to subtract kPopupMargin here
 						left : 'auto',
 						bottom : 'auto'
 					};
 					break;
 				case 'right center':
 					cssPositionProps = {
-						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ),
-						left : targetOffset.left + targetWidth + distanceAway,
+						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - kPopupMargin,
+						left : targetOffset.left + targetWidth + distanceAway, // might need to subtract kPopupMargin here
 						bottom : 'auto',
 						right : 'auto'
 					};
@@ -198,7 +218,7 @@ Backbone.ModuiPopup = Super.extend( {
 				case 'bottom center':
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
-						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
+						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ) - kPopupMargin,
 						bottom : 'auto',
 						right : 'auto'
 					};
@@ -206,7 +226,7 @@ Backbone.ModuiPopup = Super.extend( {
 				case 'bottom right':
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
-						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset,
+						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset - kPopupMargin,
 						bottom : 'auto',
 						left : 'auto'
 					};
@@ -231,10 +251,27 @@ Backbone.ModuiPopup = Super.extend( {
 				} else {
 					// Popup is outside bounding rect. try a new position.
 					havedTriedOtherPositions = true;
-					currentPositionBeingTried = _getNextPositionToTry( currentPositionBeingTried );
+					currentPositionBeingTried = _getNextPositionToTry( currentPositionBeingTried, allowedPositions );
 				}
 			} else done = true;
 		} while( ! done );
+
+		if( popupWidth !== Math.round( this.$el.outerWidth() ) || popupHeight !== Math.round( this.$el.outerHeight() ) ) {
+			// there is a fringe case in which positining the popup actually changes its width and / or height.
+			// for example, if the popup is placed just a few pixels from the edge of the view port, it might shrink
+			// and text will wrap. so we have to check to see if the width or height of the popup has changed since
+			// we started this re-positioning process. if so, try repositioning it once at the same position. if that
+			// doesn't work, then move on to another position to see if we have better luck.
+			if( ! tryAgainIfDimentionsChange ) return false;
+
+			// try one more time, with our new width and height.
+			if( ! this.reposition( [ currentPositionBeingTried ], false ) ) {
+				
+				// if that doesn't work, then give up on this position
+				newAllowedPositions = _.without( allowedPositions, currentPositionBeingTried );
+				if( newAllowedPositions.length > 0 ) return this.reposition( newAllowedPositions );
+			}
+		}
 
 		return ! allPositionsAreOutOfBounds;
 	},
@@ -289,6 +326,8 @@ Backbone.ModuiPopup = Super.extend( {
 	_setState : function( newState ) {
 		this.state = newState;
 		this.$el.attr( 'data-state', this.state );
+
+		if( newState === kState_Open ) this.timeOpened = (new Date()).getTime();
 	},
 
 	_setupTargetEl : function() {
@@ -340,7 +379,9 @@ Backbone.ModuiPopup = Super.extend( {
 
 $( document ).bind( 'mousedown', function( e ) {
 	_.each( mOpenPopups, function( thisPopup ) {
-		if( thisPopup.closeOnOutsideClick && thisPopup.state === kState_Open ) {
+		if( thisPopup.closeOnOutsideClick &&
+			thisPopup.state === kState_Open &&
+			( new Date() ).getTime() - thisPopup.timeOpened > kMinTimeAfterOpenBeforeCloseOnOutsideClick ) {
 			var thisPopupEl = thisPopup.$el.get( 0 );
 			if( thisPopupEl !== e.target && ! $.contains( thisPopupEl, e.target ) ) {
 				thisPopup.close();
@@ -373,35 +414,11 @@ function _elementPositionIsFixed( ele ) {
 	return ( ele.css( 'position' ) !== 'fixed' ) ? _elementPositionIsFixed( ele.offsetParent() ) : true;
 };
 
-function _getNextPositionToTry( position ) {
-	switch( position ) {
-		case 'top left':
-			position = 'bottom left';
-			break;
-		case 'bottom left':
-			position = 'top right';
-			break;
-		case 'top right':
-			position = 'bottom right';
-			break;
-		case 'bottom right':
-			position = 'top center';
-			break;
-		case 'top center':
-			position = 'bottom center';
-			break;
-		case 'bottom center':
-			position = 'right center';
-			break;
-		case 'right center':
-			position = 'left center';
-			break;
-		case 'left center':
-			position = 'top left';
-			break;
-	}
+function _getNextPositionToTry( position, positionsToTry ) {
+	positionIndex = _.indexOf( positionsToTry, position );
+	if( positionIndex === -1 ) throw new Error( 'Could not find position "' + position + '" in the allowed positions.' );
 
-	return position;
+	return positionIndex === positionsToTry.length - 1 ? positionsToTry[ 0 ] : positionsToTry[ positionIndex + 1 ];
 }
 
 // return UMD
