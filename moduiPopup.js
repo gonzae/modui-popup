@@ -27,10 +27,14 @@ var kPositions = [
 	'top center',
 	'right center',
 	'left center',
-	'top left',
+	'bottom center-right',
+	'bottom center-left',
+	'top center-right',
+	'top center-left',
 	'bottom left',
-	'top right',
-	'bottom right'
+	'bottom right',
+	'top left',
+	'top right'
 ];
 
 var mWindowEventListenersAttached = false;
@@ -51,7 +55,8 @@ Backbone.ModuiPopup = Super.extend( {
 		{ closeOnOutsideClick : true },
 		'onClose',
 		'signature',
-		'zIndex'
+		'zIndex',
+		'extraClassName' // appended to regular class names to facilitate styling
 	],
 
 	passMessages : { '*' : '.' }, // pass all courier messages directly through to parent view
@@ -146,8 +151,10 @@ Backbone.ModuiPopup = Super.extend( {
 
 		var popupWidth  = Math.round( this.$el.outerWidth() );
 		var popupHeight = Math.round( this.$el.outerHeight() );
+
 		var kPointerHeight = 10;
 		var kPopupMargin = 10;
+		var kPointerInsetForSidePositions = 18;
 
 		var offsetParent = $( window );
 		var parentWidth = Math.round( offsetParent.outerWidth() );
@@ -160,67 +167,81 @@ Backbone.ModuiPopup = Super.extend( {
 
 		var cssPositionProps;
 
-		var currentPositionBeingTried = _.first( allowedPositions );
-		var havedTriedOtherPositions = false;
+		var firstPositionTried;
+		var currentPositionBeingTried = firstPositionTried = _.first( allowedPositions );
+		var haveTriedOtherPositions = false;
+		var amountOutsideOfBoundingRectByPosition = {};
 		var allPositionsAreOutOfBounds = false;
 		var done = false;
 
 		do {  // run through all our different positions to find one that works
+			if( ! _.contains( kPositions, currentPositionBeingTried ) ) {
+				throw new Error( 'Invalid position for popup: ' + currentPositionBeingTried );
+			}
+
 			switch( currentPositionBeingTried ) {
-				case 'top left':
-					cssPositionProps = {
-						bottom : 'auto',
-						left : targetOffset.left + pointerOffset,
-						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
-						right : 'auto'
-					};
-					break;
-				case 'top center':
-					cssPositionProps = {
-						bottom : 'auto',
-						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ),
-						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
-						right : 'auto'
-					};
-					break;
-				case 'top right':
-					cssPositionProps = {
-						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
-						bottom : 'auto',
-						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset, // might need to subtract kPopupMargin here
-						left : 'auto'
-					};
-					break;
-				case 'left center':
-					cssPositionProps = {
-						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - kPopupMargin,
-						right : parentWidth - targetOffset.left + distanceAway, // might need to subtract kPopupMargin here
-						left : 'auto',
-						bottom : 'auto'
-					};
-					break;
-				case 'right center':
-					cssPositionProps = {
-						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - kPopupMargin,
-						left : targetOffset.left + targetWidth + distanceAway, // might need to subtract kPopupMargin here
-						bottom : 'auto',
-						right : 'auto'
-					};
-					break;
-				case 'bottom left':
-					cssPositionProps = {
-						top	: targetOffset.top + targetHeight + distanceAway,
-						left : targetOffset.left + pointerOffset,
-						right : 'auto',
-						bottom : 'auto'
-					};
-					break;
 				case 'bottom center':
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
 						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ) - kPopupMargin,
 						bottom : 'auto',
 						right : 'auto'
+					};
+					break;
+				case 'top center':
+					cssPositionProps = {
+						bottom : 'auto',
+						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ) - kPopupMargin,
+						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
+						right : 'auto'
+					};
+					break;
+				case 'right center':
+					cssPositionProps = {
+						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - kPopupMargin,
+						left : targetOffset.left + targetWidth + distanceAway,
+						bottom : 'auto',
+						right : 'auto'
+					};
+					break;
+				case 'left center':
+					cssPositionProps = {
+						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - kPopupMargin,
+						right : parentWidth - targetOffset.left + distanceAway,
+						left : 'auto',
+						bottom : 'auto'
+					};
+					break;
+				case 'bottom center-right':
+					cssPositionProps = {
+						top	: targetOffset.top + targetHeight + distanceAway,
+						left : Math.round( targetOffset.left + targetWidth / 2 ) - kPopupMargin - kPointerInsetForSidePositions + pointerOffset,
+						right : 'auto',
+						bottom : 'auto'
+					};
+					break;
+				case 'bottom center-left':
+					cssPositionProps = {
+						top	: targetOffset.top + targetHeight + distanceAway,
+						left : 'auto',
+						right : parentWidth - Math.round( targetOffset.left + targetWidth / 2 ) - kPopupMargin - kPointerInsetForSidePositions + pointerOffset,
+						bottom : 'auto'
+					};
+					break;
+				case 'top center-right':
+					cssPositionProps = {
+						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
+						left : Math.round( targetOffset.left + targetWidth / 2 ) - kPopupMargin - kPointerInsetForSidePositions + pointerOffset,
+						right : 'auto',
+						bottom : 'auto'
+					};
+					break;
+				case 'top center-left':
+					cssPositionProps = {
+						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
+						left : 'auto',
+						right : parentWidth - Math.round( targetOffset.left + targetWidth / 2 ) - kPopupMargin - kPointerInsetForSidePositions + pointerOffset,
+						bottom : 'auto'
 					};
 					break;
 				case 'bottom right':
@@ -231,17 +252,44 @@ Backbone.ModuiPopup = Super.extend( {
 						left : 'auto'
 					};
 					break;
+				case 'bottom left':
+					cssPositionProps = {
+						top	: targetOffset.top + targetHeight + distanceAway,
+						left : targetOffset.left + pointerOffset - kPopupMargin,
+						right : 'auto',
+						bottom : 'auto'
+					};
+					break;
+				case 'top right':
+					cssPositionProps = {
+						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
+						bottom : 'auto',
+						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset - kPopupMargin,
+						left : 'auto'
+					};
+					break;
+				case 'top left':
+					cssPositionProps = {
+						bottom : 'auto',
+						left : targetOffset.left + pointerOffset - kPopupMargin,
+						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
+						right : 'auto'
+					};
+					break;
 			}
 
 			// tentatively place on stage
 			this.$el
 				.css( cssPositionProps )
-				.removeClass( 'top left center bottom right' )
+				.removeClass( 'top left center bottom right center-left center-right' )
 				.addClass( currentPositionBeingTried )
 			;
 
-			if( this._isOutsideOfBoundingRect() ) {
-				if( currentPositionBeingTried === this.position && havedTriedOtherPositions ) {
+			amountOutsideOfBoundingRectByPosition[ currentPositionBeingTried ] = this._amountOutsideOfBoundingRect();
+			var cantFitIntoKeepWithinRectInThisPosition = amountOutsideOfBoundingRectByPosition[ currentPositionBeingTried ] !== 0;
+
+			if( cantFitIntoKeepWithinRectInThisPosition ) {
+				if( currentPositionBeingTried === firstPositionTried && haveTriedOtherPositions ) {
 					// if we have tried all the different positions and are now are back at our
 					// original 'preferred' position, then, shit, all positions were out of bounds.\
 					// just leave the popup in its default position, eventhough it is also out of bounds.
@@ -250,7 +298,7 @@ Backbone.ModuiPopup = Super.extend( {
 					done = true;
 				} else {
 					// Popup is outside bounding rect. try a new position.
-					havedTriedOtherPositions = true;
+					haveTriedOtherPositions = true;
 					currentPositionBeingTried = _getNextPositionToTry( currentPositionBeingTried, allowedPositions );
 				}
 			} else done = true;
@@ -266,37 +314,66 @@ Backbone.ModuiPopup = Super.extend( {
 
 			// try one more time, with our new width and height.
 			if( ! this.reposition( [ currentPositionBeingTried ], false ) ) {
-				
 				// if that doesn't work, then give up on this position
 				newAllowedPositions = _.without( allowedPositions, currentPositionBeingTried );
-				if( newAllowedPositions.length > 0 ) return this.reposition( newAllowedPositions );
+				if( newAllowedPositions.length > 0 ) allPositionsAreOutOfBounds = this.reposition( newAllowedPositions );
 			}
+		}
+
+		if( allPositionsAreOutOfBounds && allowedPositions.length > 1 ) {
+			var bestOfTheBadPositions = _.first( _.sortBy( _.pairs( amountOutsideOfBoundingRectByPosition ), function( thisPosition ) {
+				return thisPosition[ 1 ];
+			} ) )[ 0 ];
+
+			allPositionsAreOutOfBounds = this.reposition( [ bestOfTheBadPositions ], false )
 		}
 
 		return ! allPositionsAreOutOfBounds;
 	},
 
-	_isOutsideOfBoundingRect : function() {
+	_onSubviewsRendered : function() {
+		if( ! _.isUndefined( this.extraClassName ) ) this.$el.addClass( this.extraClassName );
+	},
+
+	_amountOutsideOfBoundingRect : function() {
 		var myOffset = this.$el.offset();
 		if( ! myOffset ) return false; // hidden elements have undefined offsets, not much we can do
 
+		var myWidth = this.$el.outerWidth();
+		var myHeight = this.$el.outerHeight();
+
 		var myRect = {
 			top : myOffset.top,
-			right : myOffset.left + this.$el.width(),
-			bottom : myOffset.top + this.$el.outerHeight(),
+			right : myOffset.left + myWidth,
+			bottom : myOffset.top + myHeight,
 			left : myOffset.left
 		};
 
 		var keepWithinRect = _.result( this, 'keepWithinRect' );
 
-		var sidesAreOutOfBounds = {
-			top : ( myRect.top < keepWithinRect.top ),
-			bottom : ( myRect.bottom > keepWithinRect.bottom ),
-			right : ( myRect.right > keepWithinRect.right ),
-			left : ( myRect.left < keepWithinRect.left )
-		};
+		var horizontalOverlap = Math.max( 0, Math.min( myRect.right, keepWithinRect.right ) - Math.max( myRect.left, keepWithinRect.left ) )
+		var veritcalOverlap = Math.max( 0, Math.min( myRect.bottom, keepWithinRect.bottom ) - Math.max( myRect.top, keepWithinRect.top ) );
 
-		return _.contains( sidesAreOutOfBounds, true );
+		var myRectArea = myWidth * myHeight;
+
+		return myRectArea - horizontalOverlap * veritcalOverlap;
+
+		// var amountOutOfBoundsVertically = Math.max( keepWithinRect.top - myRect.top, 0 );
+		// amountOutOfBoundsVertically += Math.max( myRect.bottom - keepWithinRect.bottom, 0 );
+
+		// var amountOutOfBoundsHorizontally = Math.max( myRect.right - keepWithinRect.right, 0 );
+		// amountOutOfBoundsHorizontally += Math.max( keepWithinRect.left - myRect.left, 0 );
+
+		// return amountOutOfBoundsVertically * amountOutOfBoundsHorizontally;
+
+		// var sidesAreOutOfBounds = {
+		// 	top : ( myRect.top < keepWithinRect.top ),
+		// 	bottom : ( myRect.bottom > keepWithinRect.bottom ),
+		// 	right : ( myRect.right > keepWithinRect.right ),
+		// 	left : ( myRect.left < keepWithinRect.left )
+		// };
+
+		// return _.contains( sidesAreOutOfBounds, true );
 	},
 
 	_onOptionsChanged : function( changedOptions ) {

@@ -131,7 +131,7 @@ div.modui-popup {
 		bottom: auto;
 	}
 
-	&.bottom.right:before {
+	&.bottom.right:before, &.bottom.center-left:before {
 		top: -6px;
 		right: $pointerWidth - 5px;
 		bottom: auto;
@@ -139,7 +139,7 @@ div.modui-popup {
 		margin-left: 0;
 	}
 
-	&.bottom.left:before {
+	&.bottom.left:before, &.bottom.center-right:before {
 		top: -($pointerHeight - 4px);
 		left: $pointerWidth - 5px;
 		right: auto;
@@ -162,7 +162,7 @@ div.modui-popup {
 		margin-left: -($pointerHeight - 4px);
 	}
 
-	&.top.right:before {
+	&.top.right:before, &.top.center-left:before {
 		bottom: -($pointerHeight - 4px);
 		right: $pointerWidth - 5px;
 		top: auto;
@@ -170,7 +170,7 @@ div.modui-popup {
 		margin-left: 0;
 	}
 
-	&.top.left:before {
+	&.top.left:before, &.top.center-right:before {
 		bottom: -($pointerHeight - 4px);
 		left: $pointerWidth - 5px;
 		top: auto;

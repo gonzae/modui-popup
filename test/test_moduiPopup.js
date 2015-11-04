@@ -24,94 +24,96 @@ describe( 'modui-popup', function() {
 		targetEl.remove();
 	} );
 
-	describe( 'opens and closes properly', function() {
-		it( 'opens properly and close + close ccallback works as expected', function( done ) {
-			var popup = ModuiPopup.open( {
-				target : targetEl,
-				position : 'top center',
-				contents : 'This is a sample popup.'
-			} );
+	// describe( 'opens and closes properly', function() {
+	// 	it( 'opens properly and close + close ccallback works as expected', function( done ) {
+	// 		var popup = ModuiPopup.open( {
+	// 			target : targetEl,
+	// 			position : 'top center',
+	// 			contents : 'This is a sample popup.'
+	// 		} );
 
-			$( '.modui-popup' ).length.should.equal( 1 );
-			popup.close( function() {
-				$( '.modui-popup' ).length.should.equal( 0 );
-				done();
-			} );
-		} );
+	// 		$( '.modui-popup' ).length.should.equal( 1 );
+	// 		popup.close( function() {
+	// 			$( '.modui-popup' ).length.should.equal( 0 );
+	// 			done();
+	// 		} );
+	// 	} );
 
-		it( 'closes on outside click', function( done ) {
-			var popup = ModuiPopup.open( {
-				target : targetEl,
-				position : 'top center',
-				contents : 'This is a sample popup.'
-			} );
+	// 	it( 'closes on outside click', function( done ) {
+	// 		var popup = ModuiPopup.open( {
+	// 			target : targetEl,
+	// 			position : 'top center',
+	// 			contents : 'This is a sample popup.'
+	// 		} );
 
-			setTimeout( function() {
-				$( document ).trigger( 'click' );
+	// 		setTimeout( function() {
+	// 			$( document ).trigger( 'click' );
 				
-				setTimeout( function() {
-					$( '.modui-popup' ).length.should.equal( 0 );
-					done();
-				}, kFadeTime + 10 );
-			}, kFadeTime + 10 );
-		} );
+	// 			setTimeout( function() {
+	// 				$( '.modui-popup' ).length.should.equal( 0 );
+	// 				done();
+	// 			}, kFadeTime + 10 );
+	// 		}, kFadeTime + 10 );
+	// 	} );
 
-		it( 'but does not close when outside click is on target element', function( done ) {
-			var popup = ModuiPopup.open( {
-				target : targetEl,
-				position : 'top center',
-				contents : 'This is a sample popup.'
-			} );
+	// 	it( 'but does not close when outside click is on target element', function( done ) {
+	// 		var popup = ModuiPopup.open( {
+	// 			target : targetEl,
+	// 			position : 'top center',
+	// 			contents : 'This is a sample popup.'
+	// 		} );
 
-			setTimeout( function() {
-				$( targetEl ).trigger( 'click' );
+	// 		setTimeout( function() {
+	// 			$( targetEl ).trigger( 'click' );
 				
-				setTimeout( function() {
-					$( '.modui-popup' ).length.should.equal( 1 );
-					popup.close( done );
-				}, kFadeTime + 10 );
-			}, kFadeTime + 10 );
-		} );
-	} );
+	// 			setTimeout( function() {
+	// 				$( '.modui-popup' ).length.should.equal( 1 );
+	// 				popup.close( done );
+	// 			}, kFadeTime + 10 );
+	// 		}, kFadeTime + 10 );
+	// 	} );
+	// } );
 
-	describe( 'has the right contents', function() {
-		it( 'html content is rendered correctly', function( done ) {
-			var popup = ModuiPopup.open( {
-				target : targetEl,
-				position : 'top center',
-				contents : '<b>This</b> is a sample popup.'
-			} );
+	// describe( 'has the right contents', function() {
+	// 	it( 'html content is rendered correctly', function( done ) {
+	// 		var popup = ModuiPopup.open( {
+	// 			target : targetEl,
+	// 			position : 'top center',
+	// 			contents : '<b>This</b> is a sample popup.'
+	// 		} );
 
-			popup.$el.text().should.equal( 'This is a sample popup.' );
-			popup.$el.html().should.containEql( '<b>This</b> is a sample popup.' );
-			popup.close( done );
-		} );
+	// 		popup.$el.text().should.equal( 'This is a sample popup.' );
+	// 		popup.$el.html().should.containEql( '<b>This</b> is a sample popup.' );
+	// 		popup.close( done );
+	// 	} );
 
-		it( 'view content is rendered correctly', function( done ) {
-			var MyView = BaseView.extend( {
-				render : function() {
-					this.$el.html( 'Sam I am I am Sam' );
-				}
-			} );
+	// 	it( 'view content is rendered correctly', function( done ) {
+	// 		var MyView = BaseView.extend( {
+	// 			render : function() {
+	// 				this.$el.html( 'Sam I am I am Sam' );
+	// 			}
+	// 		} );
 
-			var myContents = new MyView();
+	// 		var myContents = new MyView();
 
-			var popup = ModuiPopup.open( {
-				target : targetEl,
-				position : 'top center',
-				contents : myContents
-			} );
+	// 		var popup = ModuiPopup.open( {
+	// 			target : targetEl,
+	// 			position : 'top center',
+	// 			contents : myContents
+	// 		} );
 
-			popup.$el.html().should.containEql( 'Sam I am I am Sam' );
-			popup.close( done );
-		} );
-	} );
+	// 		popup.$el.html().should.containEql( 'Sam I am I am Sam' );
+	// 		popup.close( done );
+	// 	} );
+	// } );
 
-	// so we can see what this component looks like
-	after( function() {
-		sandbox();
-	} );
+	// // so we can see what this component looks like
+	// after( function() {
+	// 	sandbox();
+	// } );
 } );
+
+sandbox();
 
 function sandbox() {
 	var targetEl = $( '<div class="target" style="width: 400px;height: 100px;border: 1px solid black;margin:200px auto;"></div>' );
@@ -125,6 +127,10 @@ function sandbox() {
 		'top left',
 		'top right',
 		'right center',
+		'bottom center-left',
+		'bottom center-right',
+		'top center-left',
+		'top center-right',
 		'bottom right',
 		'bottom center',
 		'bottom left',

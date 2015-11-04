@@ -54,10 +54,14 @@ The `ModuiPopup.open()` method may be passed an options argument with the follow
 'top center'
 'right center'
 'left center'
-'top left'
+'bottom center-right'
+'bottom center-left'
+'top center-right'
+'top center-left'
 'bottom left'
-'top right'
 'bottom right'
+'top left'
+'top right'
 
 If the preferred position supplied causes the popup to extend outside of `keepWithinRect`, then the remaining positions are tried in the order above until one is found that does not cause the popup to extend outside of `keepWithinRect`. The `position` option may also be an array of preferred position strings, in which each each position in the array is tried (in the order supplied) before the remaining positions are tried.
 
