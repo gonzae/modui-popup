@@ -123,17 +123,17 @@ function sandbox() {
 	$( 'body' ).append( targetEl2 );
 
 	var kPositions = [
-		'top center', 
-		'top left',
-		'top right',
+		// 'top center', 
+		// 'top left',
+		// 'top right',
 		'right center',
 		'bottom center-left',
 		'bottom center-right',
 		'top center-left',
 		'top center-right',
-		'bottom right',
-		'bottom center',
-		'bottom left',
+		// 'bottom right',
+		// 'bottom center',
+		// 'bottom left',
 		'left center',
 	];
 

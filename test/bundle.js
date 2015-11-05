@@ -2467,7 +2467,8 @@ Backbone.ModuiPopup = Super.extend( {
 		'onClose',
 		'signature',
 		'zIndex',
-		'extraClassName' // appended to regular class names to facilitate styling
+		'extraClassName', // appended to regular class names to facilitate styling
+		{ 'kPointerHeight' : 10 }
 	],
 
 	passMessages : { '*' : '.' }, // pass all courier messages directly through to parent view
@@ -2550,8 +2551,15 @@ Backbone.ModuiPopup = Super.extend( {
 	},
  
 	reposition : function( allowedPositions, tryAgainIfDimentionsChange ) {
+		var _this = this;
+
 		if( _.isUndefined( allowedPositions ) ) {
-			allowedPositions = _.isArray( this.position ) ? _.clone( this.position ) : [ this.position ];
+			allowedPositions = [];
+			if( this.currentPosition && this.state === 'open' ) allowedPositions.push( this.currentPosition );
+
+			if( _.isArray( this.position ) ) allowedPositions = allowedPositions.concat( this.position )
+			else allowedPositions.push( this.position );
+
 			allowedPositions = _.union( allowedPositions, kPositions );
 		}
 
@@ -2562,10 +2570,10 @@ Backbone.ModuiPopup = Super.extend( {
 
 		var popupWidth  = Math.round( this.$el.outerWidth() );
 		var popupHeight = Math.round( this.$el.outerHeight() );
+		var popupMargin = Math.round( ( this.$el.outerWidth( true ) - this.$el.outerWidth() ) / 2 ); // later we assume vertical is the same as this horizontal margin
 
-		var kPointerHeight = 10;
-		var kPopupMargin = 10;
-		var kPointerInsetForSidePositions = 18;
+		var kPointerHeight = this.kPointerHeight;
+		var pointerInsetForSidePositions = Math.round( kPointerHeight + kPointerHeight * .66 );
 
 		var offsetParent = $( window );
 		var parentWidth = Math.round( offsetParent.outerWidth() );
@@ -2581,6 +2589,7 @@ Backbone.ModuiPopup = Super.extend( {
 		var firstPositionTried;
 		var currentPositionBeingTried = firstPositionTried = _.first( allowedPositions );
 		var haveTriedOtherPositions = false;
+		var amountOutsideOfBoundingRectByPosition = {};
 		var allPositionsAreOutOfBounds = false;
 		var done = false;
 
@@ -2593,7 +2602,7 @@ Backbone.ModuiPopup = Super.extend( {
 				case 'bottom center':
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
-						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ) - kPopupMargin,
+						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ) - popupMargin,
 						bottom : 'auto',
 						right : 'auto'
 					};
@@ -2601,14 +2610,14 @@ Backbone.ModuiPopup = Super.extend( {
 				case 'top center':
 					cssPositionProps = {
 						bottom : 'auto',
-						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ) - kPopupMargin,
-						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
+						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ) - popupMargin,
+						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
 						right : 'auto'
 					};
 					break;
 				case 'right center':
 					cssPositionProps = {
-						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - kPopupMargin,
+						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - popupMargin,
 						left : targetOffset.left + targetWidth + distanceAway,
 						bottom : 'auto',
 						right : 'auto'
@@ -2616,7 +2625,7 @@ Backbone.ModuiPopup = Super.extend( {
 					break;
 				case 'left center':
 					cssPositionProps = {
-						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - kPopupMargin,
+						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - popupMargin,
 						right : parentWidth - targetOffset.left + distanceAway,
 						left : 'auto',
 						bottom : 'auto'
@@ -2625,7 +2634,7 @@ Backbone.ModuiPopup = Super.extend( {
 				case 'bottom center-right':
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
-						left : Math.round( targetOffset.left + targetWidth / 2 ) - kPopupMargin - kPointerInsetForSidePositions + pointerOffset,
+						left : Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
 						right : 'auto',
 						bottom : 'auto'
 					};
@@ -2634,30 +2643,30 @@ Backbone.ModuiPopup = Super.extend( {
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
 						left : 'auto',
-						right : parentWidth - Math.round( targetOffset.left + targetWidth / 2 ) - kPopupMargin - kPointerInsetForSidePositions + pointerOffset,
+						right : parentWidth - Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
 						bottom : 'auto'
 					};
 					break;
 				case 'top center-right':
 					cssPositionProps = {
-						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
-						left : Math.round( targetOffset.left + targetWidth / 2 ) - kPopupMargin - kPointerInsetForSidePositions + pointerOffset,
+						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
+						left : Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
 						right : 'auto',
 						bottom : 'auto'
 					};
 					break;
 				case 'top center-left':
 					cssPositionProps = {
-						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
 						left : 'auto',
-						right : parentWidth - Math.round( targetOffset.left + targetWidth / 2 ) - kPopupMargin - kPointerInsetForSidePositions + pointerOffset,
+						right : parentWidth - Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
 						bottom : 'auto'
 					};
 					break;
 				case 'bottom right':
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
-						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset - kPopupMargin,
+						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset - popupMargin,
 						bottom : 'auto',
 						left : 'auto'
 					};
@@ -2665,24 +2674,24 @@ Backbone.ModuiPopup = Super.extend( {
 				case 'bottom left':
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
-						left : targetOffset.left + pointerOffset - kPopupMargin,
+						left : targetOffset.left + pointerOffset - popupMargin,
 						right : 'auto',
 						bottom : 'auto'
 					};
 					break;
 				case 'top right':
 					cssPositionProps = {
-						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
 						bottom : 'auto',
-						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset - kPopupMargin,
+						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset - popupMargin,
 						left : 'auto'
 					};
 					break;
 				case 'top left':
 					cssPositionProps = {
 						bottom : 'auto',
-						left : targetOffset.left + pointerOffset - kPopupMargin,
-						top : targetOffset.top - popupHeight - kPointerHeight - kPopupMargin - distanceAway,
+						left : targetOffset.left + pointerOffset - popupMargin,
+						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
 						right : 'auto'
 					};
 					break;
@@ -2695,7 +2704,10 @@ Backbone.ModuiPopup = Super.extend( {
 				.addClass( currentPositionBeingTried )
 			;
 
-			if( this._isOutsideOfBoundingRect() ) {
+			amountOutsideOfBoundingRectByPosition[ currentPositionBeingTried ] = this._amountOutsideOfBoundingRect();
+			var cantFitIntoKeepWithinRectInThisPosition = amountOutsideOfBoundingRectByPosition[ currentPositionBeingTried ] !== 0;
+
+			if( cantFitIntoKeepWithinRectInThisPosition ) {
 				if( currentPositionBeingTried === firstPositionTried && haveTriedOtherPositions ) {
 					// if we have tried all the different positions and are now are back at our
 					// original 'preferred' position, then, shit, all positions were out of bounds.\
@@ -2711,6 +2723,16 @@ Backbone.ModuiPopup = Super.extend( {
 			} else done = true;
 		} while( ! done );
 
+
+		if( allPositionsAreOutOfBounds && allowedPositions.length > 1 ) {
+			var bestOfTheBadPositions = _.first( _.sortBy( _.pairs( amountOutsideOfBoundingRectByPosition ), function( thisPosition ) {
+				// if the current position and another position are tied, give preference to the current position
+				return thisPosition[ 1 ] + ( thisPosition[ 0 ] === _this.currentPosition && _this.state === 'open' ? -1 : 0 );
+			} ) )[ 0 ];
+
+			allPositionsAreOutOfBounds = this.reposition( [ bestOfTheBadPositions ] )
+		}
+
 		if( popupWidth !== Math.round( this.$el.outerWidth() ) || popupHeight !== Math.round( this.$el.outerHeight() ) ) {
 			// there is a fringe case in which positining the popup actually changes its width and / or height.
 			// for example, if the popup is placed just a few pixels from the edge of the view port, it might shrink
@@ -2719,14 +2741,17 @@ Backbone.ModuiPopup = Super.extend( {
 			// doesn't work, then move on to another position to see if we have better luck.
 			if( ! tryAgainIfDimentionsChange ) return false;
 
+			allPositionsAreOutOfBounds = this.reposition( [ currentPositionBeingTried ], false );
+
 			// try one more time, with our new width and height.
-			if( ! this.reposition( [ currentPositionBeingTried ], false ) ) {
-				
-				// if that doesn't work, then give up on this position
-				newAllowedPositions = _.without( allowedPositions, currentPositionBeingTried );
-				if( newAllowedPositions.length > 0 ) return this.reposition( newAllowedPositions );
-			}
+			// if( ! this.reposition( [ currentPositionBeingTried ], false ) ) {
+			// 	// if that doesn't work, then give up on this position
+			// 	newAllowedPositions = _.without( allowedPositions, currentPositionBeingTried );
+			// 	if( newAllowedPositions.length > 0 ) allPositionsAreOutOfBounds = this.reposition( newAllowedPositions );
+			// }
 		}
+
+		this.currentPosition = currentPositionBeingTried;
 
 		return ! allPositionsAreOutOfBounds;
 	},
@@ -2735,27 +2760,45 @@ Backbone.ModuiPopup = Super.extend( {
 		if( ! _.isUndefined( this.extraClassName ) ) this.$el.addClass( this.extraClassName );
 	},
 
-	_isOutsideOfBoundingRect : function() {
+	_amountOutsideOfBoundingRect : function() {
 		var myOffset = this.$el.offset();
 		if( ! myOffset ) return false; // hidden elements have undefined offsets, not much we can do
 
+		var myWidth = this.$el.outerWidth();
+		var myHeight = this.$el.outerHeight();
+
 		var myRect = {
 			top : myOffset.top,
-			right : myOffset.left + this.$el.width(),
-			bottom : myOffset.top + this.$el.outerHeight(),
+			right : myOffset.left + myWidth,
+			bottom : myOffset.top + myHeight,
 			left : myOffset.left
 		};
 
 		var keepWithinRect = _.result( this, 'keepWithinRect' );
 
-		var sidesAreOutOfBounds = {
-			top : ( myRect.top < keepWithinRect.top ),
-			bottom : ( myRect.bottom > keepWithinRect.bottom ),
-			right : ( myRect.right > keepWithinRect.right ),
-			left : ( myRect.left < keepWithinRect.left )
-		};
+		var horizontalOverlap = Math.max( 0, Math.min( myRect.right, keepWithinRect.right ) - Math.max( myRect.left, keepWithinRect.left ) )
+		var veritcalOverlap = Math.max( 0, Math.min( myRect.bottom, keepWithinRect.bottom ) - Math.max( myRect.top, keepWithinRect.top ) );
 
-		return _.contains( sidesAreOutOfBounds, true );
+		var myRectArea = myWidth * myHeight;
+
+		return myRectArea - horizontalOverlap * veritcalOverlap;
+
+		// var amountOutOfBoundsVertically = Math.max( keepWithinRect.top - myRect.top, 0 );
+		// amountOutOfBoundsVertically += Math.max( myRect.bottom - keepWithinRect.bottom, 0 );
+
+		// var amountOutOfBoundsHorizontally = Math.max( myRect.right - keepWithinRect.right, 0 );
+		// amountOutOfBoundsHorizontally += Math.max( keepWithinRect.left - myRect.left, 0 );
+
+		// return amountOutOfBoundsVertically * amountOutOfBoundsHorizontally;
+
+		// var sidesAreOutOfBounds = {
+		// 	top : ( myRect.top < keepWithinRect.top ),
+		// 	bottom : ( myRect.bottom > keepWithinRect.bottom ),
+		// 	right : ( myRect.right > keepWithinRect.right ),
+		// 	left : ( myRect.left < keepWithinRect.left )
+		// };
+
+		// return _.contains( sidesAreOutOfBounds, true );
 	},
 
 	_onOptionsChanged : function( changedOptions ) {
@@ -2834,7 +2877,6 @@ Backbone.ModuiPopup = Super.extend( {
 		return popupInstance;
 	}
 } );
-
 
 $( document ).bind( 'mousedown', function( e ) {
 	_.each( mOpenPopups, function( thisPopup ) {
@@ -14269,17 +14311,17 @@ function sandbox() {
 	$( 'body' ).append( targetEl2 );
 
 	var kPositions = [
-		'top center', 
-		'top left',
-		'top right',
+		// 'top center', 
+		// 'top left',
+		// 'top right',
 		'right center',
 		'bottom center-left',
 		'bottom center-right',
 		'top center-left',
 		'top center-right',
-		'bottom right',
-		'bottom center',
-		'bottom left',
+		// 'bottom right',
+		// 'bottom center',
+		// 'bottom left',
 		'left center',
 	];
 
