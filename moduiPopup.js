@@ -44,6 +44,7 @@ Backbone.ModuiPopup = Super.extend( {
 		'target!',
 		'contents',
 		{ position : 'bottom center' },
+		{ strictPositioning : false },
 		{ distanceAway : 2 },
 		{ pointerOffset : 0 },
 		{ keepWithinRect : function() { return {
@@ -149,7 +150,7 @@ Backbone.ModuiPopup = Super.extend( {
 			if( _.isArray( this.position ) ) allowedPositions = allowedPositions.concat( this.position )
 			else allowedPositions.push( this.position );
 
-			allowedPositions = _.union( allowedPositions, kPositions );
+			if( ! this.strictPositioning ) allowedPositions = _.union( allowedPositions, kPositions );
 		}
 
 		if( _.isUndefined( tryAgainIfDimentionsChange ) ) tryAgainIfDimentionsChange = true;
