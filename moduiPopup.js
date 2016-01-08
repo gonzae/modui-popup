@@ -107,7 +107,7 @@ Backbone.ModuiPopup = Super.extend( {
 			Super.prototype.render.apply( this, arguments );
 		}
 
-		if( this.zIndex ) this.$el.css( 'z-index', this.zIndex );
+		if( ! _.isUndefined( this.zIndex ) ) this.$el.css( 'z-index', this.zIndex );
 		else if( this.targetEl.zIndex ) {
 			// if no explicit z-index is supplied, make sure we are in front of
 			// our target (being mindful over browser support).
