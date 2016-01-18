@@ -2438,10 +2438,10 @@ var kPositions = [
 	'top center',
 	'right center',
 	'left center',
-	'bottom center-right',
-	'bottom center-left',
-	'top center-right',
-	'top center-left',
+	'bottom center right',
+	'bottom center left',
+	'top center right',
+	'top center left',
 	'bottom left',
 	'bottom right',
 	'top left',
@@ -2631,7 +2631,7 @@ Backbone.ModuiPopup = Super.extend( {
 						bottom : 'auto'
 					};
 					break;
-				case 'bottom center-right':
+				case 'bottom center right':
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
 						left : Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
@@ -2639,7 +2639,7 @@ Backbone.ModuiPopup = Super.extend( {
 						bottom : 'auto'
 					};
 					break;
-				case 'bottom center-left':
+				case 'bottom center left':
 					cssPositionProps = {
 						top	: targetOffset.top + targetHeight + distanceAway,
 						left : 'auto',
@@ -2647,7 +2647,7 @@ Backbone.ModuiPopup = Super.extend( {
 						bottom : 'auto'
 					};
 					break;
-				case 'top center-right':
+				case 'top center right':
 					cssPositionProps = {
 						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
 						left : Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
@@ -2655,7 +2655,7 @@ Backbone.ModuiPopup = Super.extend( {
 						bottom : 'auto'
 					};
 					break;
-				case 'top center-left':
+				case 'top center left':
 					cssPositionProps = {
 						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
 						left : 'auto',

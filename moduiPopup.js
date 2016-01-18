@@ -27,15 +27,23 @@ var kPositions = [
 	'top center',
 	'right center',
 	'left center',
-	'bottom center-right',
-	'bottom center-left',
-	'top center-right',
-	'top center-left',
+	'bottom center right',
+	'bottom center left',
+	'top center right',
+	'top center left',
 	'bottom left',
 	'bottom right',
 	'top left',
-	'top right'
+	'top right',
+	'right top',
+	'right bottom',
+	'left top',
+	'left bottom'
 ];
+
+var kPositionClasses = _.map( kPositions, function( thisPosition ) {
+	return thisPosition.replace( /\ /g, '-' );
+} );
 
 var mWindowEventListenersAttached = false;
 
@@ -45,7 +53,7 @@ Backbone.ModuiPopup = Super.extend( {
 		'contents',
 		{ position : 'bottom center' },
 		{ strictPositioning : false },
-		{ distanceAway : 2 },
+		{ distanceAway : 12 }, // margin / pointer is 10 pixels. With this default the tip of the pointer ends up 2 pixels from target
 		{ pointerOffset : 0 },
 		{ keepWithinRect : function() { return {
 			top : $( window ).scrollTop(),
@@ -57,7 +65,7 @@ Backbone.ModuiPopup = Super.extend( {
 		'onClose',
 		'signature',
 		'zIndex',
-		'extraClassName', // appended to regular class names to facilitate styling
+		{ 'extraClassName' : '' }, // appended to regular class names to facilitate styling
 		{ 'kPointerHeight' : 10 }
 	],
 
@@ -191,7 +199,7 @@ Backbone.ModuiPopup = Super.extend( {
 			switch( currentPositionBeingTried ) {
 				case 'bottom center':
 					cssPositionProps = {
-						top	: targetOffset.top + targetHeight + distanceAway,
+						top	: targetOffset.top + targetHeight + distanceAway - popupMargin,
 						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ) - popupMargin,
 						bottom : 'auto',
 						right : 'auto'
@@ -205,39 +213,71 @@ Backbone.ModuiPopup = Super.extend( {
 						right : 'auto'
 					};
 					break;
+				case 'right top':
+					cssPositionProps = {
+						top	: Math.round( targetOffset.top + pointerOffset ) - popupMargin,
+						left : targetOffset.left + targetWidth + distanceAway - popupMargin,
+						bottom : 'auto',
+						right : 'auto'
+					};
+					break;
+				case 'right bottom':
+					cssPositionProps = {
+						top	: Math.round( targetOffset.top + targetHeight + pointerOffset ) - popupMargin,
+						left : targetOffset.left + targetWidth + distanceAway - popupMargin,
+						bottom : 'auto',
+						right : 'auto'
+					};
+					break;
 				case 'right center':
 					cssPositionProps = {
 						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - popupMargin,
-						left : targetOffset.left + targetWidth + distanceAway,
+						left : targetOffset.left + targetWidth + distanceAway - popupMargin,
 						bottom : 'auto',
 						right : 'auto'
+					};
+					break;
+				case 'left top':
+					cssPositionProps = {
+						top	: Math.round( targetOffset.top + pointerOffset ) - popupMargin,
+						right : parentWidth - targetOffset.left + distanceAway - popupMargin,
+						left : 'auto',
+						bottom : 'auto'
+					};
+					break;
+				case 'left bottom':
+					cssPositionProps = {
+						top	: Math.round( targetOffset.top + targetHeight + pointerOffset ) - popupMargin,
+						right : parentWidth - targetOffset.left + distanceAway - popupMargin,
+						left : 'auto',
+						bottom : 'auto'
 					};
 					break;
 				case 'left center':
 					cssPositionProps = {
 						top	: Math.round( targetOffset.top + ( targetHeight / 2 ) - ( popupHeight / 2 ) + pointerOffset ) - popupMargin,
-						right : parentWidth - targetOffset.left + distanceAway,
+						right : parentWidth - targetOffset.left + distanceAway - popupMargin,
 						left : 'auto',
 						bottom : 'auto'
 					};
 					break;
-				case 'bottom center-right':
+				case 'bottom center right':
 					cssPositionProps = {
-						top	: targetOffset.top + targetHeight + distanceAway,
+						top	: targetOffset.top + targetHeight + distanceAway - popupMargin,
 						left : Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
 						right : 'auto',
 						bottom : 'auto'
 					};
 					break;
-				case 'bottom center-left':
+				case 'bottom center left':
 					cssPositionProps = {
-						top	: targetOffset.top + targetHeight + distanceAway,
+						top	: targetOffset.top + targetHeight + distanceAway - popupMargin,
 						left : 'auto',
 						right : parentWidth - Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
 						bottom : 'auto'
 					};
 					break;
-				case 'top center-right':
+				case 'top center right':
 					cssPositionProps = {
 						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
 						left : Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
@@ -245,7 +285,7 @@ Backbone.ModuiPopup = Super.extend( {
 						bottom : 'auto'
 					};
 					break;
-				case 'top center-left':
+				case 'top center left':
 					cssPositionProps = {
 						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
 						left : 'auto',
@@ -255,7 +295,7 @@ Backbone.ModuiPopup = Super.extend( {
 					break;
 				case 'bottom right':
 					cssPositionProps = {
-						top	: targetOffset.top + targetHeight + distanceAway,
+						top	: targetOffset.top + targetHeight + distanceAway - popupMargin,
 						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset - popupMargin,
 						bottom : 'auto',
 						left : 'auto'
@@ -263,7 +303,7 @@ Backbone.ModuiPopup = Super.extend( {
 					break;
 				case 'bottom left':
 					cssPositionProps = {
-						top	: targetOffset.top + targetHeight + distanceAway,
+						top	: targetOffset.top + targetHeight + distanceAway - popupMargin,
 						left : targetOffset.left + pointerOffset - popupMargin,
 						right : 'auto',
 						bottom : 'auto'
@@ -287,11 +327,12 @@ Backbone.ModuiPopup = Super.extend( {
 					break;
 			}
 
-			// tentatively place on stage
 			this.$el
 				.css( cssPositionProps )
-				.removeClass( 'top left center bottom right center-left center-right' )
-				.addClass( currentPositionBeingTried )
+				.removeClass( 'top left bottom right' )
+				.removeClass( kPositionClasses.join( ' ' ) )
+				.addClass( currentPositionBeingTried.split( ' ' )[ 0 ] )
+				.addClass( currentPositionBeingTried.replace( /\ /g, '-' ) )
 			;
 
 			amountOutsideOfBoundingRectByPosition[ currentPositionBeingTried ] = this._amountOutsideOfBoundingRect();
