@@ -161,6 +161,8 @@ Backbone.ModuiPopup = Super.extend( {
 			if( ! this.strictPositioning ) allowedPositions = _.union( allowedPositions, kPositions );
 		}
 
+		allowedPositions = _.unique( allowedPositions );
+
 		if( _.isUndefined( tryAgainIfDimentionsChange ) ) tryAgainIfDimentionsChange = true;
 
 		var targetWidth = Math.round( this.targetEl.outerWidth() );
@@ -187,7 +189,7 @@ Backbone.ModuiPopup = Super.extend( {
 		var firstPositionTried;
 		var currentPositionBeingTried = firstPositionTried = _.first( allowedPositions );
 		var haveTriedOtherPositions = false;
-		var amountOutsideOfBoundingRectByPosition = {};
+		var degreeOfUndesirabilityByPosition = {};
 		var allPositionsAreOutOfBounds = false;
 		var done = false;
 
@@ -209,7 +211,7 @@ Backbone.ModuiPopup = Super.extend( {
 					cssPositionProps = {
 						bottom : 'auto',
 						left : Math.round( targetOffset.left + ( targetWidth / 2 ) - ( popupWidth / 2 ) + pointerOffset ) - popupMargin,
-						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
 						right : 'auto'
 					};
 					break;
@@ -279,7 +281,7 @@ Backbone.ModuiPopup = Super.extend( {
 					break;
 				case 'top center right':
 					cssPositionProps = {
-						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
 						left : Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
 						right : 'auto',
 						bottom : 'auto'
@@ -287,7 +289,7 @@ Backbone.ModuiPopup = Super.extend( {
 					break;
 				case 'top center left':
 					cssPositionProps = {
-						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
 						left : 'auto',
 						right : parentWidth - Math.round( targetOffset.left + targetWidth / 2 ) - popupMargin - pointerInsetForSidePositions + pointerOffset,
 						bottom : 'auto'
@@ -311,7 +313,7 @@ Backbone.ModuiPopup = Super.extend( {
 					break;
 				case 'top right':
 					cssPositionProps = {
-						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
 						bottom : 'auto',
 						right : parentWidth - ( targetOffset.left + targetWidth ) + pointerOffset - popupMargin,
 						left : 'auto'
@@ -321,7 +323,7 @@ Backbone.ModuiPopup = Super.extend( {
 					cssPositionProps = {
 						bottom : 'auto',
 						left : targetOffset.left + pointerOffset - popupMargin,
-						top : targetOffset.top - popupHeight - kPointerHeight - popupMargin - distanceAway,
+						top : targetOffset.top - popupHeight - kPointerHeight - distanceAway,
 						right : 'auto'
 					};
 					break;
@@ -335,8 +337,8 @@ Backbone.ModuiPopup = Super.extend( {
 				.addClass( currentPositionBeingTried.replace( /\ /g, '-' ) )
 			;
 
-			amountOutsideOfBoundingRectByPosition[ currentPositionBeingTried ] = this._amountOutsideOfBoundingRect();
-			var cantFitIntoKeepWithinRectInThisPosition = amountOutsideOfBoundingRectByPosition[ currentPositionBeingTried ] !== 0;
+			degreeOfUndesirabilityByPosition[ currentPositionBeingTried ] = this._getDegreeOfUndesirabilityOfCurrentPosition();
+			var cantFitIntoKeepWithinRectInThisPosition = degreeOfUndesirabilityByPosition[ currentPositionBeingTried ] !== 0;
 
 			if( cantFitIntoKeepWithinRectInThisPosition ) {
 				if( currentPositionBeingTried === firstPositionTried && haveTriedOtherPositions ) {
@@ -356,7 +358,7 @@ Backbone.ModuiPopup = Super.extend( {
 
 
 		if( allPositionsAreOutOfBounds && allowedPositions.length > 1 ) {
-			var bestOfTheBadPositions = _.first( _.sortBy( _.pairs( amountOutsideOfBoundingRectByPosition ), function( thisPosition ) {
+			var bestOfTheBadPositions = _.first( _.sortBy( _.pairs( degreeOfUndesirabilityByPosition ), function( thisPosition ) {
 				// if the current position and another position are tied, give preference to the current position
 				return thisPosition[ 1 ] + ( thisPosition[ 0 ] === _this.currentPosition && _this.state === 'open' ? -1 : 0 );
 			} ) )[ 0 ];
@@ -391,7 +393,7 @@ Backbone.ModuiPopup = Super.extend( {
 		if( ! _.isUndefined( this.extraClassName ) ) this.$el.addClass( this.extraClassName );
 	},
 
-	_amountOutsideOfBoundingRect : function() {
+	_getDegreeOfUndesirabilityOfCurrentPosition : function() {
 		var myOffset = this.$el.offset();
 		if( ! myOffset ) return false; // hidden elements have undefined offsets, not much we can do
 
@@ -412,24 +414,21 @@ Backbone.ModuiPopup = Super.extend( {
 
 		var myRectArea = myWidth * myHeight;
 
-		return myRectArea - horizontalOverlap * veritcalOverlap;
+		var amountOutsideBoundingRect = myRectArea - horizontalOverlap * veritcalOverlap;
 
-		// var amountOutOfBoundsVertically = Math.max( keepWithinRect.top - myRect.top, 0 );
-		// amountOutOfBoundsVertically += Math.max( myRect.bottom - keepWithinRect.bottom, 0 );
+		var documentRect = {
+			top : 0,
+			left : 0,
+			right : $( document ).width(),
+			bottom : $( document ).height()
+		};
 
-		// var amountOutOfBoundsHorizontally = Math.max( myRect.right - keepWithinRect.right, 0 );
-		// amountOutOfBoundsHorizontally += Math.max( keepWithinRect.left - myRect.left, 0 );
-
-		// return amountOutOfBoundsVertically * amountOutOfBoundsHorizontally;
-
-		// var sidesAreOutOfBounds = {
-		// 	top : ( myRect.top < keepWithinRect.top ),
-		// 	bottom : ( myRect.bottom > keepWithinRect.bottom ),
-		// 	right : ( myRect.right > keepWithinRect.right ),
-		// 	left : ( myRect.left < keepWithinRect.left )
-		// };
-
-		// return _.contains( sidesAreOutOfBounds, true );
+		horizontalOverlap = Math.max( 0, Math.min( myRect.right, documentRect.right ) - Math.max( myRect.left, documentRect.left ) )
+		veritcalOverlap = Math.max( 0, Math.min( myRect.bottom, documentRect.bottom ) - Math.max( myRect.top, documentRect.top ) );
+		
+		var amountOutsideDocument = myRectArea - horizontalOverlap * veritcalOverlap;
+		
+		return amountOutsideBoundingRect + amountOutsideDocument * 10;
 	},
 
 	_onOptionsChanged : function( changedOptions ) {
@@ -525,10 +524,7 @@ $( document ).bind( 'mousedown', function( e ) {
 function _attachWindowEventListeners() {
 	$( window ).scroll( function() {
 		_.each( mOpenPopups, function( thisPopup ) {
-			if( _elementPositionIsFixed( thisPopup.targetEl ) || thisPopup.hasElementFixedChanges ) {
-				thisPopup.reposition();
-				thisPopup.hasElementFixedChanges = true;
-			}
+			thisPopup.reposition();
 		} );
 	} );
 
