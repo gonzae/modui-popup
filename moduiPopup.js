@@ -428,7 +428,7 @@ Backbone.ModuiPopup = Super.extend( {
 		
 		var amountOutsideDocument = myRectArea - horizontalOverlap * veritcalOverlap;
 		
-		return amountOutsideBoundingRect + amountOutsideDocument * 10;
+		return Math.max( Math.round( amountOutsideBoundingRect + amountOutsideDocument * 10 ), 0 );
 	},
 
 	_onOptionsChanged : function( changedOptions ) {
